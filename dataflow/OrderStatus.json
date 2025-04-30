@@ -50,10 +50,17 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DataFlowSQLOutput",
+						"referenceName": "AzureSqlTable14",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "AggregatedData"
+				},
+				{
+					"dataset": {
+						"referenceName": "Orderdata",
+						"type": "DatasetReference"
+					},
+					"name": "OrderDataFinal"
 				}
 			],
 			"transformations": [
@@ -79,16 +86,13 @@
 					"name": "select2"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "OrderFinal"
 				},
 				{
 					"name": "aggregate1"
 				},
 				{
 					"name": "sort1"
-				},
-				{
-					"name": "window1"
 				},
 				{
 					"name": "aggregateTotalQuantity"
@@ -98,6 +102,9 @@
 				},
 				{
 					"name": "TopProdInEachCategory"
+				},
+				{
+					"name": "DataSplit"
 				}
 			],
 			"scriptLines": [
@@ -221,31 +228,48 @@
 				"    Age<=20,'Young' ,\r",
 				" Age>20 && Age<30,'Adult' ,\r",
 				" 'Senior'\r",
-				" )) ~> derivedColumn1",
-				"derivedColumn1 aggregate(groupBy(ProductName),",
+				" )) ~> OrderFinal",
+				"OrderFinal aggregate(groupBy(ProductName),",
 				"     TotalOrders = sum(Quantity),",
 				"          OrderAmount = sum(Quantity*UnitPrice)) ~> aggregate1",
 				"aggregate1 sort(desc(TotalOrders, true)) ~> sort1",
-				"derivedColumn1 window(over({Product Category}),",
-				"     desc(Quantity, true),",
-				"     ProdRank = rank()) ~> window1",
-				"derivedColumn1 aggregate(groupBy({Product Category},",
+				"OrderFinal aggregate(groupBy({Product Category},",
 				"          ProductName),",
 				"     TotalQuantity = sum(Quantity)) ~> aggregateTotalQuantity",
 				"aggregateTotalQuantity window(over({Product Category}),",
 				"     desc(TotalQuantity, true),",
 				"     ProdRank = rank()) ~> window2",
 				"window2 filter(ProdRank==1) ~> TopProdInEachCategory",
-				"aggregateTotalQuantity sink(allowSchemaDrift: true,",
+				"OrderFinal split(CustomerCat=='Young',",
+				"     CustomerCat=='Adult',",
+				"     disjoint: false) ~> DataSplit@(Young, Adult, Senior)",
+				"window2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     truncate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+				"     errorHandlingOption: 'stopOnFirstError') ~> AggregatedData",
+				"OrderFinal sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          OrderID as string,",
+				"          OrderDate as string,",
+				"          ProductID as string,",
+				"          Quantity as string,",
+				"          UnitPrice as string,",
+				"          CustomerID as string,",
+				"          SalesExecID as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> OrderDataFinal"
 			]
 		}
 	}
