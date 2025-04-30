@@ -112,6 +112,9 @@
 				},
 				{
 					"name": "DataSplit"
+				},
+				{
+					"name": "select3"
 				}
 			],
 			"scriptLines": [
@@ -250,6 +253,25 @@
 				"OrderFinal split(CustomerCat=='Young',",
 				"     CustomerCat=='Adult',",
 				"     disjoint: false) ~> DataSplit@(Young, Adult, Senior)",
+				"OrderFinal select(mapColumn(",
+				"          OrderID,",
+				"          OrderDate,",
+				"          Quantity,",
+				"          UnitPrice,",
+				"          SalesExecID,",
+				"          ProductID,",
+				"          ProductName,",
+				"          Product_Category = {Product Category},",
+				"          CustomerID,",
+				"          CustomerName,",
+				"          Phone,",
+				"          City,",
+				"          Country,",
+				"          Age,",
+				"          CustomerCat",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
 				"window2 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -279,7 +301,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> OrderDataFinal",
-				"OrderFinal sink(allowSchemaDrift: true,",
+				"select3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
 				"     partitionFileNames:['Order.parquet'],",
