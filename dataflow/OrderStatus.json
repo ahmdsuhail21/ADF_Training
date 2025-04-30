@@ -265,6 +265,7 @@
 				"          CustomerID as string,",
 				"          SalesExecID as string",
 				"     ),",
+				"     partitionFileNames:['OrderDataFinal'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
