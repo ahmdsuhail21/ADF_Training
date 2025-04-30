@@ -249,6 +249,7 @@
 				"     insertable:true,",
 				"     updateable:false,",
 				"     upsertable:false,",
+				"     truncate:true,",
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
@@ -268,7 +269,8 @@
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> OrderDataFinal"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> OrderDataFinal"
 			]
 		}
 	}
