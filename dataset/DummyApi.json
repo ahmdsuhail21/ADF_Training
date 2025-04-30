@@ -1,0 +1,13 @@
+{
+	"name": "DummyApi",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MyApiLinkedService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

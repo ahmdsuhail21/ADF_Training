@@ -1,0 +1,9 @@
+{
+	"name": "DataFactory-Suhail",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "b8e6031b-9335-41a3-94d2-77367c74a8df",
+		"tenantId": "d2e493bb-b485-4a29-bb4c-fa18c6695e61"
+	}
+}

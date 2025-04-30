@@ -1,0 +1,252 @@
+{
+	"name": "OrderStatus",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Order2023",
+						"type": "DatasetReference"
+					},
+					"name": "Order2023"
+				},
+				{
+					"dataset": {
+						"referenceName": "Order2024",
+						"type": "DatasetReference"
+					},
+					"name": "Order2024"
+				},
+				{
+					"dataset": {
+						"referenceName": "Order2025",
+						"type": "DatasetReference"
+					},
+					"name": "Order2025"
+				},
+				{
+					"dataset": {
+						"referenceName": "Product",
+						"type": "DatasetReference"
+					},
+					"name": "Product"
+				},
+				{
+					"dataset": {
+						"referenceName": "SalesExe",
+						"type": "DatasetReference"
+					},
+					"name": "SlesExe"
+				},
+				{
+					"dataset": {
+						"referenceName": "Customer",
+						"type": "DatasetReference"
+					},
+					"name": "Customer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DataFlowSQLOutput",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "OrderData"
+				},
+				{
+					"name": "TypeCasting"
+				},
+				{
+					"name": "CustCast"
+				},
+				{
+					"name": "OrdersProducts"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "OrderProdCust"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "sort1"
+				},
+				{
+					"name": "window1"
+				},
+				{
+					"name": "aggregateTotalQuantity"
+				},
+				{
+					"name": "window2"
+				},
+				{
+					"name": "TopProdInEachCategory"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          OrderID as string,",
+				"          OrderDate as string,",
+				"          ProductID as string,",
+				"          Quantity as string,",
+				"          UnitPrice as string,",
+				"          CustomerID as string,",
+				"          SalesExecID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Order2023",
+				"source(output(",
+				"          OrderID as string,",
+				"          OrderDate as string,",
+				"          ProductID as string,",
+				"          Quantity as string,",
+				"          UnitPrice as string,",
+				"          CustomerID as string,",
+				"          SalesExecID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Order2024",
+				"source(output(",
+				"          OrderID as string,",
+				"          OrderDate as string,",
+				"          ProductID as string,",
+				"          Quantity as string,",
+				"          UnitPrice as string,",
+				"          CustomerID as string,",
+				"          SalesExecID as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Order2025",
+				"source(output(",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          {Product Category} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Product",
+				"source(output(",
+				"          SalesExecID as string,",
+				"          Name as string,",
+				"          Age as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SlesExe",
+				"source(output(",
+				"          CustomerID as string,",
+				"          CustomerName as string,",
+				"          Phone as string,",
+				"          City as string,",
+				"          Country as string,",
+				"          Age as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Customer",
+				"Order2023, Order2024, Order2025 union(byName: true)~> OrderData",
+				"OrderData cast(output(",
+				"          OrderDate as date 'yyyy-MM-dd',",
+				"          Quantity as integer,",
+				"          UnitPrice as float",
+				"     ),",
+				"     errors: true) ~> TypeCasting",
+				"Customer cast(output(",
+				"          Age as integer",
+				"     ),",
+				"     errors: true) ~> CustCast",
+				"TypeCasting, Product join(OrderData@ProductID == Product@ProductID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> OrdersProducts",
+				"OrdersProducts select(mapColumn(",
+				"          OrderID,",
+				"          OrderDate,",
+				"          Quantity,",
+				"          UnitPrice,",
+				"          CustomerID,",
+				"          SalesExecID,",
+				"          ProductID = OrderData@ProductID,",
+				"          ProductName,",
+				"          {Product Category}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1, CustCast join(select1@CustomerID == Customer@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> OrderProdCust",
+				"OrderProdCust select(mapColumn(",
+				"          OrderID,",
+				"          OrderDate,",
+				"          Quantity,",
+				"          UnitPrice,",
+				"          SalesExecID,",
+				"          ProductID,",
+				"          ProductName,",
+				"          {Product Category},",
+				"          CustomerID = Customer@CustomerID,",
+				"          CustomerName,",
+				"          Phone,",
+				"          City,",
+				"          Country,",
+				"          Age",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"select2 derive(CustomerCat = case\r",
+				"(\r",
+				"    Age<=20,'Young' ,\r",
+				" Age>20 && Age<30,'Adult' ,\r",
+				" 'Senior'\r",
+				" )) ~> derivedColumn1",
+				"derivedColumn1 aggregate(groupBy(ProductName),",
+				"     TotalOrders = sum(Quantity),",
+				"          OrderAmount = sum(Quantity*UnitPrice)) ~> aggregate1",
+				"aggregate1 sort(desc(TotalOrders, true)) ~> sort1",
+				"derivedColumn1 window(over({Product Category}),",
+				"     desc(Quantity, true),",
+				"     ProdRank = rank()) ~> window1",
+				"derivedColumn1 aggregate(groupBy({Product Category},",
+				"          ProductName),",
+				"     TotalQuantity = sum(Quantity)) ~> aggregateTotalQuantity",
+				"aggregateTotalQuantity window(over({Product Category}),",
+				"     desc(TotalQuantity, true),",
+				"     ProdRank = rank()) ~> window2",
+				"window2 filter(ProdRank==1) ~> TopProdInEachCategory",
+				"aggregateTotalQuantity sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+			]
+		}
+	}
+}

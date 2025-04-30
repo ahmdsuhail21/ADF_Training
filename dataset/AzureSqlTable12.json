@@ -1,0 +1,51 @@
+{
+	"name": "AzureSqlTable12",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FileName",
+				"type": "varchar"
+			},
+			{
+				"name": "Adls_Location",
+				"type": "varchar"
+			},
+			{
+				"name": "LandingSchema",
+				"type": "varchar"
+			},
+			{
+				"name": "LandingTable",
+				"type": "varchar"
+			},
+			{
+				"name": "Load_Freq",
+				"type": "varchar"
+			},
+			{
+				"name": "SP_name",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Source_Query",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "Cntrl",
+			"table": "MD_Lab2"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
