@@ -61,6 +61,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "OrderDataFinal"
+				},
+				{
+					"dataset": {
+						"referenceName": "Parquet1",
+						"type": "DatasetReference"
+					},
+					"name": "OrderParque"
 				}
 			],
 			"transformations": [
@@ -271,7 +278,17 @@
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> OrderDataFinal"
+				"     partitionBy('hash', 1)) ~> OrderDataFinal",
+				"OrderFinal sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['Order.parquet'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> OrderParque"
 			]
 		}
 	}
