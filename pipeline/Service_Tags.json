@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ServiceTagsCopy",
+				"name": "CopyJson",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -33,7 +33,95 @@
 						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['name']"
+								},
+								"sink": {
+									"name": "name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['id']"
+								},
+								"sink": {
+									"name": "id",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['changeNumber']"
+								},
+								"sink": {
+									"name": "ChangeNumber",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['region']"
+								},
+								"sink": {
+									"name": "region",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['regionId']"
+								},
+								"sink": {
+									"name": "regionId",
+									"type": "Int64"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['platform']"
+								},
+								"sink": {
+									"name": "platform",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['systemService']"
+								},
+								"sink": {
+									"name": "systemService",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['addressPrefixes'][0]"
+								},
+								"sink": {
+									"name": "AddressPrefix",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['properties']['networkFeatures'][0]"
+								},
+								"sink": {
+									"name": "NetworkFeature",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['values']",
+						"mapComplexValuesToString": false
+					}
 				},
 				"inputs": [
 					{
