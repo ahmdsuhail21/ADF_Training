@@ -1,0 +1,76 @@
+{
+	"name": "serviceData",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "ServiceTags_Public_20250428.json",
+				"folderPath": "serviceTag",
+				"fileSystem": "data"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"changeNumber": {
+					"type": "integer"
+				},
+				"cloud": {
+					"type": "string"
+				},
+				"values": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"name": {
+								"type": "string"
+							},
+							"id": {
+								"type": "string"
+							},
+							"properties": {
+								"type": "object",
+								"properties": {
+									"changeNumber": {
+										"type": "integer"
+									},
+									"region": {
+										"type": "string"
+									},
+									"regionId": {
+										"type": "integer"
+									},
+									"platform": {
+										"type": "string"
+									},
+									"systemService": {
+										"type": "string"
+									},
+									"addressPrefixes": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									},
+									"networkFeatures": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
