@@ -832,6 +832,59 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/OrderDataFlow')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "OrderStatus",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"Order2023": {},
+									"Order2024": {},
+									"Order2025": {},
+									"Product": {},
+									"SlesExe": {},
+									"Customer": {},
+									"AggregatedData": {},
+									"OrderDataFinal": {},
+									"OrderParque": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/OrderStatus')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Param_ADLS_sql')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1530,6 +1583,27 @@
 						"value": "@dataset().TableName",
 						"type": "Expression"
 					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable14')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "Landing",
+					"table": "OrdersAgregated"
 				}
 			},
 			"dependsOn": [
@@ -2307,6 +2381,64 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Orderdata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "OrderFactTable.csv",
+						"folderPath": "DataFlow",
+						"fileSystem": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "OrderID",
+						"type": "String"
+					},
+					{
+						"name": "OrderDate",
+						"type": "String"
+					},
+					{
+						"name": "ProductID",
+						"type": "String"
+					},
+					{
+						"name": "Quantity",
+						"type": "String"
+					},
+					{
+						"name": "UnitPrice",
+						"type": "String"
+					},
+					{
+						"name": "CustomerID",
+						"type": "String"
+					},
+					{
+						"name": "SalesExecID",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Orders')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2454,6 +2586,31 @@
 						"type": "String"
 					}
 				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Parquet1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "DataFlow",
+						"fileSystem": "data"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage')]"
@@ -2766,10 +2923,24 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "DataFlowSQLOutput",
+								"referenceName": "AzureSqlTable14",
 								"type": "DatasetReference"
 							},
-							"name": "sink1"
+							"name": "AggregatedData"
+						},
+						{
+							"dataset": {
+								"referenceName": "Orderdata",
+								"type": "DatasetReference"
+							},
+							"name": "OrderDataFinal"
+						},
+						{
+							"dataset": {
+								"referenceName": "Parquet1",
+								"type": "DatasetReference"
+							},
+							"name": "OrderParque"
 						}
 					],
 					"transformations": [
@@ -2795,16 +2966,13 @@
 							"name": "select2"
 						},
 						{
-							"name": "derivedColumn1"
+							"name": "OrderFinal"
 						},
 						{
 							"name": "aggregate1"
 						},
 						{
 							"name": "sort1"
-						},
-						{
-							"name": "window1"
 						},
 						{
 							"name": "aggregateTotalQuantity"
@@ -2814,6 +2982,12 @@
 						},
 						{
 							"name": "TopProdInEachCategory"
+						},
+						{
+							"name": "DataSplit"
+						},
+						{
+							"name": "select3"
 						}
 					],
 					"scriptLines": [
@@ -2937,31 +3111,79 @@
 						"    Age<=20,'Young' ,\r",
 						" Age>20 && Age<30,'Adult' ,\r",
 						" 'Senior'\r",
-						" )) ~> derivedColumn1",
-						"derivedColumn1 aggregate(groupBy(ProductName),",
+						" )) ~> OrderFinal",
+						"OrderFinal aggregate(groupBy(ProductName),",
 						"     TotalOrders = sum(Quantity),",
 						"          OrderAmount = sum(Quantity*UnitPrice)) ~> aggregate1",
 						"aggregate1 sort(desc(TotalOrders, true)) ~> sort1",
-						"derivedColumn1 window(over({Product Category}),",
-						"     desc(Quantity, true),",
-						"     ProdRank = rank()) ~> window1",
-						"derivedColumn1 aggregate(groupBy({Product Category},",
+						"OrderFinal aggregate(groupBy({Product Category},",
 						"          ProductName),",
 						"     TotalQuantity = sum(Quantity)) ~> aggregateTotalQuantity",
 						"aggregateTotalQuantity window(over({Product Category}),",
 						"     desc(TotalQuantity, true),",
 						"     ProdRank = rank()) ~> window2",
 						"window2 filter(ProdRank==1) ~> TopProdInEachCategory",
-						"aggregateTotalQuantity sink(allowSchemaDrift: true,",
+						"OrderFinal split(CustomerCat=='Young',",
+						"     CustomerCat=='Adult',",
+						"     disjoint: false) ~> DataSplit@(Young, Adult, Senior)",
+						"OrderFinal select(mapColumn(",
+						"          OrderID,",
+						"          OrderDate,",
+						"          Quantity,",
+						"          UnitPrice,",
+						"          SalesExecID,",
+						"          ProductID,",
+						"          ProductName,",
+						"          Product_Category = {Product Category},",
+						"          CustomerID,",
+						"          CustomerName,",
+						"          Phone,",
+						"          City,",
+						"          Country,",
+						"          Age,",
+						"          CustomerCat",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"window2 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     deletable:false,",
 						"     insertable:true,",
 						"     updateable:false,",
 						"     upsertable:false,",
+						"     truncate:true,",
 						"     format: 'table',",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+						"     errorHandlingOption: 'stopOnFirstError') ~> AggregatedData",
+						"OrderFinal sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          OrderID as string,",
+						"          OrderDate as string,",
+						"          ProductID as string,",
+						"          Quantity as string,",
+						"          UnitPrice as string,",
+						"          CustomerID as string,",
+						"          SalesExecID as string",
+						"     ),",
+						"     partitionFileNames:['OrderDataFinal'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> OrderDataFinal",
+						"select3 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     partitionFileNames:['Order.parquet'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> OrderParque"
 					]
 				}
 			},
@@ -2972,7 +3194,9 @@
 				"[concat(variables('factoryId'), '/datasets/Product')]",
 				"[concat(variables('factoryId'), '/datasets/SalesExe')]",
 				"[concat(variables('factoryId'), '/datasets/Customer')]",
-				"[concat(variables('factoryId'), '/datasets/DataFlowSQLOutput')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable14')]",
+				"[concat(variables('factoryId'), '/datasets/Orderdata')]",
+				"[concat(variables('factoryId'), '/datasets/Parquet1')]"
 			]
 		},
 		{
@@ -3106,6 +3330,261 @@
 				"[concat(variables('factoryId'), '/datasets/Products')]",
 				"[concat(variables('factoryId'), '/datasets/Customers')]",
 				"[concat(variables('factoryId'), '/datasets/DataFlowSQLOutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Service_Tags')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyJson",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['name']"
+										},
+										"sink": {
+											"name": "name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['id']"
+										},
+										"sink": {
+											"name": "id",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['properties']['changeNumber']"
+										},
+										"sink": {
+											"name": "ChangeNumber",
+											"type": "Int64"
+										}
+									},
+									{
+										"source": {
+											"path": "[['properties']['region']"
+										},
+										"sink": {
+											"name": "region",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['properties']['regionId']"
+										},
+										"sink": {
+											"name": "regionId",
+											"type": "Int64"
+										}
+									},
+									{
+										"source": {
+											"path": "[['properties']['platform']"
+										},
+										"sink": {
+											"name": "platform",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['properties']['systemService']"
+										},
+										"sink": {
+											"name": "systemService",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['properties']['addressPrefixes'][0]"
+										},
+										"sink": {
+											"name": "AddressPrefix",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['properties']['networkFeatures'][0]"
+										},
+										"sink": {
+											"name": "NetworkFeature",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": "$['values']",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "serviceData",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "serviceTagSql",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/serviceData')]",
+				"[concat(variables('factoryId'), '/datasets/serviceTagSql')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/serviceData')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "ServiceTags_Public_20250428.json",
+						"folderPath": "serviceTag",
+						"fileSystem": "data"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"changeNumber": {
+							"type": "integer"
+						},
+						"cloud": {
+							"type": "string"
+						},
+						"values": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string"
+									},
+									"id": {
+										"type": "string"
+									},
+									"properties": {
+										"type": "object",
+										"properties": {
+											"changeNumber": {
+												"type": "integer"
+											},
+											"region": {
+												"type": "string"
+											},
+											"regionId": {
+												"type": "integer"
+											},
+											"platform": {
+												"type": "string"
+											},
+											"systemService": {
+												"type": "string"
+											},
+											"addressPrefixes": {
+												"type": "array",
+												"items": {
+													"type": "string"
+												}
+											},
+											"networkFeatures": {
+												"type": "array",
+												"items": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/serviceTagSql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "Landing",
+					"table": "ServiceTag"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase')]"
 			]
 		}
 	]
