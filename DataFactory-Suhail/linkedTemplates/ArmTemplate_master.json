@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DataFactory-Suhail"
 		},
+		"AlanDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AlanDB'"
+		},
 		"AzureDataLakeStorage_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage'"
@@ -14,6 +18,18 @@
 		"AzureSqlDatabase_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSqlDatabase'"
+		},
+		"AlanDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainingserv11.database.windows.net"
+		},
+		"AlanDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "training_DB"
+		},
+		"AlanDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
 		},
 		"AzureDataLakeStorage_properties_typeProperties_url": {
 			"type": "string",
@@ -62,11 +78,23 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AlanDB_password": {
+						"value": "[parameters('AlanDB_password')]"
+					},
 					"AzureDataLakeStorage_accountKey": {
 						"value": "[parameters('AzureDataLakeStorage_accountKey')]"
 					},
 					"AzureSqlDatabase_password": {
 						"value": "[parameters('AzureSqlDatabase_password')]"
+					},
+					"AlanDB_properties_typeProperties_server": {
+						"value": "[parameters('AlanDB_properties_typeProperties_server')]"
+					},
+					"AlanDB_properties_typeProperties_database": {
+						"value": "[parameters('AlanDB_properties_typeProperties_database')]"
+					},
+					"AlanDB_properties_typeProperties_userName": {
+						"value": "[parameters('AlanDB_properties_typeProperties_userName')]"
 					},
 					"AzureDataLakeStorage_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_properties_typeProperties_url')]"
@@ -125,6 +153,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suhail_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "DataFactory-Suhail_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suhail_ArmTemplate_2')]"
 			]
 		}
 	]

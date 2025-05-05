@@ -5,11 +5,23 @@
 		"factoryName": {
 			"value": "DataFactory-Suhail"
 		},
+		"AlanDB_password": {
+			"value": ""
+		},
 		"AzureDataLakeStorage_accountKey": {
 			"value": ""
 		},
 		"AzureSqlDatabase_password": {
 			"value": ""
+		},
+		"AlanDB_properties_typeProperties_server": {
+			"value": "trainingserv11.database.windows.net"
+		},
+		"AlanDB_properties_typeProperties_database": {
+			"value": "training_DB"
+		},
+		"AlanDB_properties_typeProperties_userName": {
+			"value": "sqladmin"
 		},
 		"AzureDataLakeStorage_properties_typeProperties_url": {
 			"value": "https://storageaccsuhail.dfs.core.windows.net/"
