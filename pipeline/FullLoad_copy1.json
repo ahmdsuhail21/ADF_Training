@@ -132,12 +132,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('Lookup2').output.firstRow.column_count,0)",
+						"value": "@greater(activity('Lookup_Landing').output.firstRow.column_count,0)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
 						{
-							"name": "Wait1",
+							"name": "No_New_Record",
 							"description": "No New Records",
 							"type": "Wait",
 							"dependsOn": [],
