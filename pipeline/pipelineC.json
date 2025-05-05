@@ -1,0 +1,25 @@
+{
+	"name": "pipelineC",
+	"properties": {
+		"activities": [
+			{
+				"name": "WaitC",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": {
+						"value": "@pipeline().parameters.WaitC",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"WaitC": {
+				"type": "int"
+			}
+		},
+		"annotations": []
+	}
+}
