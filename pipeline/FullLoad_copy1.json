@@ -3,11 +3,11 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "CopyToLanding",
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Set variable1",
+						"activity": "WatermarkDate",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -66,7 +66,7 @@
 				]
 			},
 			{
-				"name": "Lookup1",
+				"name": "Lookup_watermark",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
@@ -95,11 +95,11 @@
 				}
 			},
 			{
-				"name": "Set variable1",
+				"name": "WatermarkDate",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Lookup1",
+						"activity": "Lookup_watermark",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -113,96 +113,9 @@
 				"typeProperties": {
 					"variableName": "value",
 					"value": {
-						"value": "@formatDateTime(activity('Lookup1').output.value[0].Watermark_DateTime, 'yyyy-MM-dd HH:mm:ss.fff')\n",
+						"value": "@formatDateTime(activity('Lookup_watermark').output.value[0].Watermark_DateTime, 'yyyy-MM-dd HH:mm:ss.fff')\n",
 						"type": "Expression"
 					}
-				}
-			},
-			{
-				"name": "Copy data2",
-				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"sink": {
-						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false,
-						"disableMetricsCollection": false
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "AzureSqlTable16",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "Lead",
-						"type": "DatasetReference"
-					}
-				]
-			},
-			{
-				"name": "Script1",
-				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Copy data2",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "Update Cntrl.Leads_Watermark \nSET Watermark_DateTime = (Select MAX(CreatedDate) from [Alan].[Leads])\n",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			},
 			{
@@ -210,7 +123,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Lookup2",
+						"activity": "Lookup_Landing",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -219,7 +132,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@greater(activity('Lookup2').output,0)",
+						"value": "@greater(activity('Lookup2').output.firstRow.column_count,0)",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -322,11 +235,12 @@
 				}
 			},
 			{
-				"name": "Lookup2",
+				"name": "Lookup_Landing",
+				"description": "check if landing table have any value",
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "CopyToLanding",
 						"dependencyConditions": [
 							"Succeeded"
 						]
