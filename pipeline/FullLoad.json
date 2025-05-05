@@ -113,7 +113,7 @@
 				"typeProperties": {
 					"variableName": "value",
 					"value": {
-						"value": "@formatDateTime(activity('Lookup1').output.value[0].Watermark_DateTime, 'yyyy-MM-dd HH:mm:ss')",
+						"value": "@formatDateTime(activity('Lookup1').output.value[0].Watermark_DateTime, 'yyyy-MM-dd HH:mm:ss.fff')\n",
 						"type": "Expression"
 					}
 				}
