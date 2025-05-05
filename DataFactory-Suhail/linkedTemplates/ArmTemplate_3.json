@@ -6,12 +6,192 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "DataFactory-Suhail"
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_B": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_C": {
+			"type": "int",
+			"defaultValue": 5
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Orders",
+								"type": "DatasetReference"
+							},
+							"name": "Orders"
+						},
+						{
+							"dataset": {
+								"referenceName": "Products",
+								"type": "DatasetReference"
+							},
+							"name": "Products"
+						},
+						{
+							"dataset": {
+								"referenceName": "Customers",
+								"type": "DatasetReference"
+							},
+							"name": "Customers"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DataFlowSQLOutput",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "JanData"
+						},
+						{
+							"name": "cast1"
+						},
+						{
+							"name": "cast2"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          OrderID as string,",
+						"          OrderDate as string,",
+						"          CustomerID as string,",
+						"          ProductID as string,",
+						"          Quantity as string,",
+						"          TotalAmount as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Orders",
+						"source(output(",
+						"          ProductID as string,",
+						"          ProductName as string,",
+						"          Category as string,",
+						"          Price as string,",
+						"          StockQuantity as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Products",
+						"source(output(",
+						"          CustomerID as string,",
+						"          FirstName as string,",
+						"          LastName as string,",
+						"          Email as string,",
+						"          Phone as string,",
+						"          City as string,",
+						"          Country as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Customers",
+						"cast1 filter(month(OrderDate)==3) ~> JanData",
+						"Orders cast(output(",
+						"          OrderDate as date 'yyyy-MM-dd',",
+						"          Quantity as integer,",
+						"          TotalAmount as double",
+						"     ),",
+						"     errors: true) ~> cast1",
+						"Products cast(output(",
+						"          Price as double,",
+						"          StockQuantity as integer",
+						"     ),",
+						"     errors: true) ~> cast2",
+						"cast2 select(mapColumn(",
+						"          ProductID,",
+						"          ProductName,",
+						"          Prod_Cat = Category,",
+						"          Price,",
+						"          StockQuantity",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"Customers derive(Phone_Validity = iif(length(Phone)==10,'Valid','Invalid')) ~> derivedColumn1",
+						"JanData sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     recreate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Combo_ABC_51')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Combo_ABC",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"A": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_A')]",
+							"B": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_B')]",
+							"C": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_C')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-05-05T12:17:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								51
+							],
+							"hours": [
+								17
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/OrderDataFlow')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
