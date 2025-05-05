@@ -146,7 +146,8 @@
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
 					"translator": {
@@ -199,7 +200,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "Update Cntrl.Leads_Watermark \nSET Watermark_DateTime = (Select MAX(CreatedDate) from [Landing].[Alan_Leads])\n",
+								"value": "Update Cntrl.Leads_Watermark \nSET Watermark_DateTime = (Select MAX(CreatedDate) from [Alan].[Leads])\n",
 								"type": "Expression"
 							}
 						}
