@@ -6,24 +6,332 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "DataFactory-Suhail"
-		},
-		"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
-			"type": "int",
-			"defaultValue": 5
-		},
-		"Combo_ABC_51_properties_Combo_ABC_parameters_B": {
-			"type": "int",
-			"defaultValue": 5
-		},
-		"Combo_ABC_51_properties_Combo_ABC_parameters_C": {
-			"type": "int",
-			"defaultValue": 5
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/OrderStatus')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Order2023",
+								"type": "DatasetReference"
+							},
+							"name": "Order2023"
+						},
+						{
+							"dataset": {
+								"referenceName": "Order2024",
+								"type": "DatasetReference"
+							},
+							"name": "Order2024"
+						},
+						{
+							"dataset": {
+								"referenceName": "Order2025",
+								"type": "DatasetReference"
+							},
+							"name": "Order2025"
+						},
+						{
+							"dataset": {
+								"referenceName": "Product",
+								"type": "DatasetReference"
+							},
+							"name": "Product"
+						},
+						{
+							"dataset": {
+								"referenceName": "SalesExe",
+								"type": "DatasetReference"
+							},
+							"name": "SlesExe"
+						},
+						{
+							"dataset": {
+								"referenceName": "Customer",
+								"type": "DatasetReference"
+							},
+							"name": "Customer"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable14",
+								"type": "DatasetReference"
+							},
+							"name": "AggregatedData"
+						},
+						{
+							"dataset": {
+								"referenceName": "Orderdata",
+								"type": "DatasetReference"
+							},
+							"name": "OrderDataFinal"
+						},
+						{
+							"dataset": {
+								"referenceName": "Parquet1",
+								"type": "DatasetReference"
+							},
+							"name": "OrderParque"
+						}
+					],
+					"transformations": [
+						{
+							"name": "OrderData"
+						},
+						{
+							"name": "TypeCasting"
+						},
+						{
+							"name": "CustCast"
+						},
+						{
+							"name": "OrdersProducts"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "OrderProdCust"
+						},
+						{
+							"name": "select2"
+						},
+						{
+							"name": "OrderFinal"
+						},
+						{
+							"name": "aggregate1"
+						},
+						{
+							"name": "sort1"
+						},
+						{
+							"name": "aggregateTotalQuantity"
+						},
+						{
+							"name": "window2"
+						},
+						{
+							"name": "TopProdInEachCategory"
+						},
+						{
+							"name": "DataSplit"
+						},
+						{
+							"name": "select3"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          OrderID as string,",
+						"          OrderDate as string,",
+						"          ProductID as string,",
+						"          Quantity as string,",
+						"          UnitPrice as string,",
+						"          CustomerID as string,",
+						"          SalesExecID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Order2023",
+						"source(output(",
+						"          OrderID as string,",
+						"          OrderDate as string,",
+						"          ProductID as string,",
+						"          Quantity as string,",
+						"          UnitPrice as string,",
+						"          CustomerID as string,",
+						"          SalesExecID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Order2024",
+						"source(output(",
+						"          OrderID as string,",
+						"          OrderDate as string,",
+						"          ProductID as string,",
+						"          Quantity as string,",
+						"          UnitPrice as string,",
+						"          CustomerID as string,",
+						"          SalesExecID as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Order2025",
+						"source(output(",
+						"          ProductID as string,",
+						"          ProductName as string,",
+						"          {Product Category} as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Product",
+						"source(output(",
+						"          SalesExecID as string,",
+						"          Name as string,",
+						"          Age as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> SlesExe",
+						"source(output(",
+						"          CustomerID as string,",
+						"          CustomerName as string,",
+						"          Phone as string,",
+						"          City as string,",
+						"          Country as string,",
+						"          Age as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> Customer",
+						"Order2023, Order2024, Order2025 union(byName: true)~> OrderData",
+						"OrderData cast(output(",
+						"          OrderDate as date 'yyyy-MM-dd',",
+						"          Quantity as integer,",
+						"          UnitPrice as float",
+						"     ),",
+						"     errors: true) ~> TypeCasting",
+						"Customer cast(output(",
+						"          Age as integer",
+						"     ),",
+						"     errors: true) ~> CustCast",
+						"TypeCasting, Product join(OrderData@ProductID == Product@ProductID,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> OrdersProducts",
+						"OrdersProducts select(mapColumn(",
+						"          OrderID,",
+						"          OrderDate,",
+						"          Quantity,",
+						"          UnitPrice,",
+						"          CustomerID,",
+						"          SalesExecID,",
+						"          ProductID = OrderData@ProductID,",
+						"          ProductName,",
+						"          {Product Category}",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1, CustCast join(select1@CustomerID == Customer@CustomerID,",
+						"     joinType:'left',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> OrderProdCust",
+						"OrderProdCust select(mapColumn(",
+						"          OrderID,",
+						"          OrderDate,",
+						"          Quantity,",
+						"          UnitPrice,",
+						"          SalesExecID,",
+						"          ProductID,",
+						"          ProductName,",
+						"          {Product Category},",
+						"          CustomerID = Customer@CustomerID,",
+						"          CustomerName,",
+						"          Phone,",
+						"          City,",
+						"          Country,",
+						"          Age",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 derive(CustomerCat = case\r",
+						"(\r",
+						"    Age<=20,'Young' ,\r",
+						" Age>20 && Age<30,'Adult' ,\r",
+						" 'Senior'\r",
+						" )) ~> OrderFinal",
+						"OrderFinal aggregate(groupBy(ProductName),",
+						"     TotalOrders = sum(Quantity),",
+						"          OrderAmount = sum(Quantity*UnitPrice)) ~> aggregate1",
+						"aggregate1 sort(desc(TotalOrders, true)) ~> sort1",
+						"OrderFinal aggregate(groupBy({Product Category},",
+						"          ProductName),",
+						"     TotalQuantity = sum(Quantity)) ~> aggregateTotalQuantity",
+						"aggregateTotalQuantity window(over({Product Category}),",
+						"     desc(TotalQuantity, true),",
+						"     ProdRank = rank()) ~> window2",
+						"window2 filter(ProdRank==1) ~> TopProdInEachCategory",
+						"OrderFinal split(CustomerCat=='Young',",
+						"     CustomerCat=='Adult',",
+						"     disjoint: false) ~> DataSplit@(Young, Adult, Senior)",
+						"OrderFinal select(mapColumn(",
+						"          OrderID,",
+						"          OrderDate,",
+						"          Quantity,",
+						"          UnitPrice,",
+						"          SalesExecID,",
+						"          ProductID,",
+						"          ProductName,",
+						"          Product_Category = {Product Category},",
+						"          CustomerID,",
+						"          CustomerName,",
+						"          Phone,",
+						"          City,",
+						"          Country,",
+						"          Age,",
+						"          CustomerCat",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select3",
+						"window2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     truncate:true,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> AggregatedData",
+						"OrderFinal sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          OrderID as string,",
+						"          OrderDate as string,",
+						"          ProductID as string,",
+						"          Quantity as string,",
+						"          UnitPrice as string,",
+						"          CustomerID as string,",
+						"          SalesExecID as string",
+						"     ),",
+						"     partitionFileNames:['OrderDataFinal'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> OrderDataFinal",
+						"select3 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     partitionFileNames:['Order.parquet'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> OrderParque"
+					]
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
@@ -153,46 +461,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Combo_ABC_51')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Combo_ABC",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"A": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_A')]",
-							"B": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_B')]",
-							"C": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_C')]"
-						}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2025-05-05T12:17:00",
-						"timeZone": "India Standard Time",
-						"schedule": {
-							"minutes": [
-								51
-							],
-							"hours": [
-								17
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/OrderDataFlow')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -241,7 +509,9 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/OrderStatus')]"
+			]
 		}
 	]
 }

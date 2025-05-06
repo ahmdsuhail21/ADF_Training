@@ -431,6 +431,68 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Combo_BC')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Execute PipelineB",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pipelineB",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WaitB": 10
+							}
+						}
+					},
+					{
+						"name": "Execute Pipelinec",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Execute PipelineB",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pipelineC",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {
+								"WaitC": 20
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pipelineB')]",
+				"[concat(variables('factoryId'), '/pipelines/pipelineC')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/FullLoad')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -689,7 +751,16 @@
 							"secureOutput": false,
 							"secureInput": false
 						},
-						"userProperties": [],
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "dbo.Leads"
+							},
+							{
+								"name": "Destination",
+								"value": "Landing.Alan_Leads"
+							}
+						],
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
@@ -831,7 +902,16 @@
 										"secureOutput": false,
 										"secureInput": false
 									},
-									"userProperties": [],
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "Landing.Alan_Leads"
+										},
+										{
+											"name": "Destination",
+											"value": "Alan.Leads"
+										}
+									],
 									"typeProperties": {
 										"source": {
 											"type": "AzureSqlSource",
@@ -4055,6 +4135,48 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Combo_ABC_51')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Combo_ABC",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"A": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_A')]",
+							"B": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_B')]",
+							"C": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_C')]"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2025-05-05T12:17:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								51
+							],
+							"hours": [
+								17
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Combo_ABC')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/OrderStatus')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -4515,110 +4637,6 @@
 				"[concat(variables('factoryId'), '/datasets/Products')]",
 				"[concat(variables('factoryId'), '/datasets/Customers')]",
 				"[concat(variables('factoryId'), '/datasets/DataFlowSQLOutput')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Combo_BC')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Execute PipelineB",
-						"type": "ExecutePipeline",
-						"dependsOn": [],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pipelineB",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WaitB": 10
-							}
-						}
-					},
-					{
-						"name": "Execute Pipelinec",
-						"type": "ExecutePipeline",
-						"dependsOn": [
-							{
-								"activity": "Execute PipelineB",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"pipeline": {
-								"referenceName": "pipelineC",
-								"type": "PipelineReference"
-							},
-							"waitOnCompletion": true,
-							"parameters": {
-								"WaitC": 20
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/pipelineB')]",
-				"[concat(variables('factoryId'), '/pipelines/pipelineC')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Combo_ABC_51')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Combo_ABC",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"A": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_A')]",
-							"B": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_B')]",
-							"C": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_C')]"
-						}
-					}
-				],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2025-05-05T12:17:00",
-						"timeZone": "India Standard Time",
-						"schedule": {
-							"minutes": [
-								51
-							],
-							"hours": [
-								17
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/Combo_ABC')]"
 			]
 		}
 	]
