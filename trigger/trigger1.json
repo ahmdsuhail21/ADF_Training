@@ -1,0 +1,30 @@
+{
+	"name": "trigger1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Combo_ABC",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"A": 5,
+					"B": 5,
+					"C": 5
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/data/blobs/ABC/",
+			"blobPathEndsWith": "Student1.csv",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
