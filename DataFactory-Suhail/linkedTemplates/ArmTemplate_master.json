@@ -63,19 +63,19 @@
 			"type": "int",
 			"defaultValue": 5
 		},
-		"trigger1_properties_Combo_ABC_parameters_A": {
+		"triggerBlob_properties_Combo_ABC_parameters_A": {
+			"type": "int",
+			"defaultValue": 10
+		},
+		"triggerBlob_properties_Combo_ABC_parameters_B": {
 			"type": "int",
 			"defaultValue": 5
 		},
-		"trigger1_properties_Combo_ABC_parameters_B": {
+		"triggerBlob_properties_Combo_ABC_parameters_C": {
 			"type": "int",
 			"defaultValue": 5
 		},
-		"trigger1_properties_Combo_ABC_parameters_C": {
-			"type": "int",
-			"defaultValue": 5
-		},
-		"trigger1_properties_typeProperties_scope": {
+		"triggerBlob_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
 		},
@@ -206,17 +206,17 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
-					"trigger1_properties_Combo_ABC_parameters_A": {
-						"value": "[parameters('trigger1_properties_Combo_ABC_parameters_A')]"
+					"triggerBlob_properties_Combo_ABC_parameters_A": {
+						"value": "[parameters('triggerBlob_properties_Combo_ABC_parameters_A')]"
 					},
-					"trigger1_properties_Combo_ABC_parameters_B": {
-						"value": "[parameters('trigger1_properties_Combo_ABC_parameters_B')]"
+					"triggerBlob_properties_Combo_ABC_parameters_B": {
+						"value": "[parameters('triggerBlob_properties_Combo_ABC_parameters_B')]"
 					},
-					"trigger1_properties_Combo_ABC_parameters_C": {
-						"value": "[parameters('trigger1_properties_Combo_ABC_parameters_C')]"
+					"triggerBlob_properties_Combo_ABC_parameters_C": {
+						"value": "[parameters('triggerBlob_properties_Combo_ABC_parameters_C')]"
 					},
-					"trigger1_properties_typeProperties_scope": {
-						"value": "[parameters('trigger1_properties_typeProperties_scope')]"
+					"triggerBlob_properties_typeProperties_scope": {
+						"value": "[parameters('triggerBlob_properties_typeProperties_scope')]"
 					}
 				}
 			},

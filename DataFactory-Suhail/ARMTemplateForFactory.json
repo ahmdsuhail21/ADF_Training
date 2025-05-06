@@ -63,19 +63,19 @@
 			"type": "int",
 			"defaultValue": 5
 		},
-		"trigger1_properties_Combo_ABC_parameters_A": {
+		"triggerBlob_properties_Combo_ABC_parameters_A": {
+			"type": "int",
+			"defaultValue": 10
+		},
+		"triggerBlob_properties_Combo_ABC_parameters_B": {
 			"type": "int",
 			"defaultValue": 5
 		},
-		"trigger1_properties_Combo_ABC_parameters_B": {
+		"triggerBlob_properties_Combo_ABC_parameters_C": {
 			"type": "int",
 			"defaultValue": 5
 		},
-		"trigger1_properties_Combo_ABC_parameters_C": {
-			"type": "int",
-			"defaultValue": 5
-		},
-		"trigger1_properties_typeProperties_scope": {
+		"triggerBlob_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
 		}
@@ -4656,7 +4656,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"name": "[concat(parameters('factoryName'), '/triggerBlob')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -4669,9 +4669,9 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {
-							"A": "[parameters('trigger1_properties_Combo_ABC_parameters_A')]",
-							"B": "[parameters('trigger1_properties_Combo_ABC_parameters_B')]",
-							"C": "[parameters('trigger1_properties_Combo_ABC_parameters_C')]"
+							"A": "[parameters('triggerBlob_properties_Combo_ABC_parameters_A')]",
+							"B": "[parameters('triggerBlob_properties_Combo_ABC_parameters_B')]",
+							"C": "[parameters('triggerBlob_properties_Combo_ABC_parameters_C')]"
 						}
 					}
 				],
@@ -4680,7 +4680,7 @@
 					"blobPathBeginsWith": "/data/blobs/ABC/",
 					"blobPathEndsWith": "Student1.csv",
 					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
+					"scope": "[parameters('triggerBlob_properties_typeProperties_scope')]",
 					"events": [
 						"Microsoft.Storage.BlobCreated"
 					]
