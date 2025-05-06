@@ -59,6 +59,15 @@
 		"triggerBlob_properties_typeProperties_scope": {
 			"value": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
 		},
+		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
+			"value": "@triggerBody().fileName"
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_ContainName": {
+			"value": "@triggerBody().folderPath"
+		},
+		"addDropFileTrigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		},
 		"containerUri": {
 			"value": ""
 		},

@@ -78,6 +78,18 @@
 		"triggerBlob_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_ContainName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().folderPath"
+		},
+		"addDropFileTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
 		}
 	},
 	"variables": {
@@ -4688,6 +4700,84 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/Combo_ABC')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SendEmail')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "POST",
+							"headers": {},
+							"body": {
+								"value": "{\n\"pipelinename\":\"@{pipeline().Pipeline}\",\n\"container\": \"@{pipeline().parameters.ContainName}\",\n\"filename\":\" @{pipeline().parameters.FileName}\"\n}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"FileName": {
+						"type": "string"
+					},
+					"ContainName": {
+						"type": "string"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/addDropFileTrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "SendEmail",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"FileName": "[parameters('addDropFileTrigger_properties_SendEmail_parameters_FileName')]",
+							"ContainName": "[parameters('addDropFileTrigger_properties_SendEmail_parameters_ContainName')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/data/blobs/Student1",
+					"blobPathEndsWith": ".csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('addDropFileTrigger_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated",
+						"Microsoft.Storage.BlobDeleted"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/SendEmail')]"
 			]
 		}
 	]
