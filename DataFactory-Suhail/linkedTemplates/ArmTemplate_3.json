@@ -224,6 +224,39 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/triggerBlob')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Combo_ABC",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"A": "[parameters('triggerBlob_properties_Combo_ABC_parameters_A')]",
+							"B": "[parameters('triggerBlob_properties_Combo_ABC_parameters_B')]",
+							"C": "[parameters('triggerBlob_properties_Combo_ABC_parameters_C')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/data/blobs/ABC/",
+					"blobPathEndsWith": "Student1.csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('triggerBlob_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/OrderStatus')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -666,39 +699,6 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true,",
 						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/triggerBlob')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "Combo_ABC",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"A": "[parameters('triggerBlob_properties_Combo_ABC_parameters_A')]",
-							"B": "[parameters('triggerBlob_properties_Combo_ABC_parameters_B')]",
-							"C": "[parameters('triggerBlob_properties_Combo_ABC_parameters_C')]"
-						}
-					}
-				],
-				"type": "BlobEventsTrigger",
-				"typeProperties": {
-					"blobPathBeginsWith": "/data/blobs/ABC/",
-					"blobPathEndsWith": "Student1.csv",
-					"ignoreEmptyBlobs": true,
-					"scope": "[parameters('triggerBlob_properties_typeProperties_scope')]",
-					"events": [
-						"Microsoft.Storage.BlobCreated"
 					]
 				}
 			},

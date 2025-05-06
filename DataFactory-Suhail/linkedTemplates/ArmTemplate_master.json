@@ -63,6 +63,18 @@
 			"type": "int",
 			"defaultValue": 5
 		},
+		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_ContainName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().folderPath"
+		},
+		"addDropFileTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		},
 		"triggerBlob_properties_Combo_ABC_parameters_A": {
 			"type": "int",
 			"defaultValue": 10
@@ -76,18 +88,6 @@
 			"defaultValue": 5
 		},
 		"triggerBlob_properties_typeProperties_scope": {
-			"type": "string",
-			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
-		},
-		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "@triggerBody().fileName"
-		},
-		"addDropFileTrigger_properties_SendEmail_parameters_ContainName": {
-			"type": "string",
-			"defaultValue": "@triggerBody().folderPath"
-		},
-		"addDropFileTrigger_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
 		},
