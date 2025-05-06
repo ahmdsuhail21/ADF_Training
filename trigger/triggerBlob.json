@@ -1,5 +1,5 @@
 {
-	"name": "trigger1",
+	"name": "triggerBlob",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"A": 5,
+					"A": 10,
 					"B": 5,
 					"C": 5
 				}
