@@ -27,6 +27,26 @@
 					},
 					"firstRowOnly": false
 				}
+			},
+			{
+				"name": "ForEach_Table",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "LookupMeta",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('LookupMeta').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false
+				}
 			}
 		],
 		"annotations": []
