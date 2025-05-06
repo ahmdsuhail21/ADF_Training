@@ -62,6 +62,22 @@
 		"Combo_ABC_51_properties_Combo_ABC_parameters_C": {
 			"type": "int",
 			"defaultValue": 5
+		},
+		"trigger1_properties_Combo_ABC_parameters_A": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"trigger1_properties_Combo_ABC_parameters_B": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"trigger1_properties_Combo_ABC_parameters_C": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
 		}
 	},
 	"variables": {
@@ -4637,6 +4653,41 @@
 				"[concat(variables('factoryId'), '/datasets/Products')]",
 				"[concat(variables('factoryId'), '/datasets/Customers')]",
 				"[concat(variables('factoryId'), '/datasets/DataFlowSQLOutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Combo_ABC",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"A": "[parameters('trigger1_properties_Combo_ABC_parameters_A')]",
+							"B": "[parameters('trigger1_properties_Combo_ABC_parameters_B')]",
+							"C": "[parameters('trigger1_properties_Combo_ABC_parameters_C')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/data/blobs/ABC/",
+					"blobPathEndsWith": "Student1.csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Combo_ABC')]"
 			]
 		}
 	]
