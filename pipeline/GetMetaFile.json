@@ -124,6 +124,9 @@
 		"variables": {
 			"date": {
 				"type": "String"
+			},
+			"OutdatedFiles": {
+				"type": "String"
 			}
 		},
 		"annotations": []
