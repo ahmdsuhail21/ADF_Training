@@ -115,7 +115,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "INSERT INTO file_update_log (fileName, adls_Location, updated_Date)\nVALUES (@{item().FileName}, @{item().Adls_Location}, @{item().LastModifiedDate});\n",
+											"value": "INSERT INTO file_update_log (fileName, adls_Location,updated_Date)\nVALUES (\n    '@{item().FileName}', \n    '@{item().Adls_Location}', \n    '@{formatDateTime(item().LastModifiedDate, 'yyyy-MM-dd HH:mm:ss.fff')}'\n);\n\n",
 											"type": "Expression"
 										}
 									}
