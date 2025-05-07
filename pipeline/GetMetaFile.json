@@ -86,6 +86,36 @@
 									"type": "DelimitedTextReadSettings"
 								}
 							}
+						},
+						{
+							"name": "is_Outdated",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get_Meta_File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@less(activity('Get_Meta_File').output.lastModified,utcNow() )",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Wait1",
+										"type": "Wait",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								]
+							}
 						}
 					]
 				}
