@@ -80,6 +80,7 @@
 								],
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -185,6 +186,39 @@
 				"linkedServiceName": {
 					"referenceName": "AzureSqlDatabase",
 					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "LookupMetaStatus",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "SP_FileStatus",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "Select FileName From Cntrl.MetaDataTable Where Status = 'Failure'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "MetadataTable",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
