@@ -1706,7 +1706,31 @@
 							"expression": {
 								"value": "@greater(length(activity('Lookup_UnUpdatedFiles').output.value), 0)",
 								"type": "Expression"
-							}
+							},
+							"ifTrueActivities": [
+								{
+									"name": "Web1",
+									"type": "WebActivity",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"method": "POST",
+										"headers": {},
+										"url": "https://prod-15.centralindia.logic.azure.com:443/workflows/23352561042d49169c3b53cbdf4ae83c/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=gu1wqFhu3Z17pGKgZJ0mbe3AIZHorSeHlj2Yj99NT4U",
+										"body": {
+											"value": "@pipeline().parameters.FileName",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
 					}
 				],
