@@ -264,11 +264,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"FileName": {
-				"type": "string"
-			}
-		},
 		"variables": {
 			"OutDatedFiles": {
 				"type": "Array"
