@@ -159,6 +159,33 @@
 					"referenceName": "AzureSqlDatabase",
 					"type": "LinkedServiceReference"
 				}
+			},
+			{
+				"name": "SP_FileStatus",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "SP_InsertLogTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[SP_FileStatus]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"variables": {
