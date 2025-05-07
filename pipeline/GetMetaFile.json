@@ -86,40 +86,6 @@
 									"type": "DelimitedTextReadSettings"
 								}
 							}
-						},
-						{
-							"name": "is_Outdated",
-							"type": "IfCondition",
-							"dependsOn": [
-								{
-									"activity": "Get_Meta_File",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"expression": {
-									"value": "@less(activity('Get_Meta_File').output.lastModified,startOfDay(utcNow()))",
-									"type": "Expression"
-								},
-								"ifTrueActivities": [
-									{
-										"name": "NotUpdatedFiles",
-										"type": "AppendVariable",
-										"dependsOn": [],
-										"userProperties": [],
-										"typeProperties": {
-											"variableName": "OutDatedFiles",
-											"value": {
-												"value": "@concat('File Name: ',activity('Get_Meta_File').output.itemName,' not Updated')",
-												"type": "Expression"
-											}
-										}
-									}
-								]
-							}
 						}
 					]
 				}
@@ -127,8 +93,7 @@
 		],
 		"variables": {
 			"OutDatedFiles": {
-				"type": "Array",
-				"defaultValue": "\" \""
+				"type": "Array"
 			}
 		},
 		"annotations": []
