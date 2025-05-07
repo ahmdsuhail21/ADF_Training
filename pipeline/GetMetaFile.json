@@ -88,7 +88,7 @@
 							}
 						},
 						{
-							"name": "UpdateMetaDataTable",
+							"name": "SP_UpdateMetaDataTable",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
@@ -134,7 +134,7 @@
 				}
 			},
 			{
-				"name": "Stored procedure1",
+				"name": "SP_InsertLogTable",
 				"type": "SqlServerStoredProcedure",
 				"dependsOn": [
 					{
