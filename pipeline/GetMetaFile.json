@@ -106,12 +106,16 @@
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Wait1",
-										"type": "Wait",
+										"name": "NotUpdatedFiles",
+										"type": "AppendVariable",
 										"dependsOn": [],
 										"userProperties": [],
 										"typeProperties": {
-											"waitTimeInSeconds": 1
+											"variableName": "OutDatedFiles",
+											"value": {
+												"value": "@concat('File Name: ',activity('Get_Meta_File').output.itemName,' not Updated')",
+												"type": "Expression"
+											}
 										}
 									}
 								]
@@ -122,11 +126,8 @@
 			}
 		],
 		"variables": {
-			"date": {
-				"type": "String"
-			},
-			"OutdatedFiles": {
-				"type": "String"
+			"OutDatedFiles": {
+				"type": "Array"
 			}
 		},
 		"annotations": []
