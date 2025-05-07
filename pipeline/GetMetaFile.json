@@ -88,7 +88,7 @@
 							}
 						},
 						{
-							"name": "Stored procedure1",
+							"name": "UpdateMetaDataTable",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
@@ -107,15 +107,8 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"storedProcedureName": "[dbo].[SP_Insert_File_Log]",
+								"storedProcedureName": "[dbo].[UpdateMetaData]",
 								"storedProcedureParameters": {
-									"Adls_Location": {
-										"value": {
-											"value": "@item().Adls_Location",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
 									"FileName": {
 										"value": {
 											"value": "@item().FileName",
