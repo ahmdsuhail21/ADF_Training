@@ -127,7 +127,8 @@
 		],
 		"variables": {
 			"OutDatedFiles": {
-				"type": "Array"
+				"type": "Array",
+				"defaultValue": "\" \""
 			}
 		},
 		"annotations": []
