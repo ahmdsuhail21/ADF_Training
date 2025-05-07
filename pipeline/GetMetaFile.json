@@ -88,8 +88,8 @@
 							}
 						},
 						{
-							"name": "Script1",
-							"type": "Script",
+							"name": "Stored procedure1",
+							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
 									"activity": "Get_Meta_File",
@@ -106,21 +106,35 @@
 								"secureInput": false
 							},
 							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[SP_Insert_File_Log]",
+								"storedProcedureParameters": {
+									"Adls_Location": {
+										"value": {
+											"value": "@item().FileName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"FileName": {
+										"value": {
+											"value": "@item().Adls_Location",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"Updated_On": {
+										"value": {
+											"value": "@formatDateTime(item().LastModifiedDate, 'yyyy-MM-dd HH:mm:ss.fff')",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
 							"linkedServiceName": {
 								"referenceName": "AzureSqlDatabase",
 								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "INSERT INTO file_update_log (fileName, adls_Location,updated_Date)\nVALUES (\n    '@{item().FileName}', \n    '@{item().Adls_Location}', \n    '@{formatDateTime(item().LastModifiedDate, 'yyyy-MM-dd HH:mm:ss.fff')}'\n);\n\n",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
 							}
 						}
 					]
