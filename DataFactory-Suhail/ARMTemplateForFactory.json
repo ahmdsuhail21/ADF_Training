@@ -63,6 +63,10 @@
 			"type": "int",
 			"defaultValue": 5
 		},
+		"FileUpdateTrigger_properties_GetMetaFile_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
 		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
 			"type": "string",
 			"defaultValue": "@triggerBody().fileName"
@@ -4644,7 +4648,9 @@
 							"referenceName": "GetMetaFile",
 							"type": "PipelineReference"
 						},
-						"parameters": {}
+						"parameters": {
+							"FileName": "[parameters('FileUpdateTrigger_properties_GetMetaFile_parameters_FileName')]"
+						}
 					}
 				],
 				"type": "ScheduleTrigger",
@@ -4654,7 +4660,8 @@
 						"interval": 1,
 						"startTime": "2025-05-08T09:30:00",
 						"endTime": "2025-05-20T09:30:00",
-						"timeZone": "India Standard Time"
+						"timeZone": "India Standard Time",
+						"schedule": {}
 					}
 				}
 			},

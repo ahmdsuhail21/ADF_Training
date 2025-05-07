@@ -47,6 +47,9 @@
 		"Combo_ABC_51_properties_Combo_ABC_parameters_C": {
 			"value": 5
 		},
+		"FileUpdateTrigger_properties_GetMetaFile_parameters_FileName": {
+			"value": "@triggerBody().fileName"
+		},
 		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
 			"value": "@triggerBody().fileName"
 		},
