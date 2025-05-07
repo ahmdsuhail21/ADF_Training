@@ -111,14 +111,14 @@
 								"storedProcedureParameters": {
 									"Adls_Location": {
 										"value": {
-											"value": "@item().FileName",
+											"value": "@item().Adls_Location",
 											"type": "Expression"
 										},
 										"type": "String"
 									},
 									"FileName": {
 										"value": {
-											"value": "@item().Adls_Location",
+											"value": "@item().FileName",
 											"type": "Expression"
 										},
 										"type": "String"
