@@ -106,12 +106,20 @@
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Wait1",
-										"type": "Wait",
+										"name": "Set variable1",
+										"type": "SetVariable",
 										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
 										"userProperties": [],
 										"typeProperties": {
-											"waitTimeInSeconds": 1
+											"variableName": "date",
+											"value": {
+												"value": "@utcNow()",
+												"type": "Expression"
+											}
 										}
 									}
 								]
@@ -121,6 +129,11 @@
 				}
 			}
 		],
+		"variables": {
+			"date": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
