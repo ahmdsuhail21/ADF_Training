@@ -189,7 +189,7 @@
 				}
 			},
 			{
-				"name": "LookupMetaStatus",
+				"name": "Lookup_UnUpdatedFiles",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -219,6 +219,25 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Lookup_UnUpdatedFiles",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(length(activity('Lookup_UnUpdatedFiles').output.value), 0)",
+						"type": "Expression"
+					}
 				}
 			}
 		],
