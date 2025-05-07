@@ -129,58 +129,35 @@
 								"referenceName": "AzureSqlDatabase",
 								"type": "LinkedServiceReference"
 							}
-						},
-						{
-							"name": "UpdatingLogTable",
-							"type": "SqlServerStoredProcedure",
-							"dependsOn": [
-								{
-									"activity": "UpdateMetaDataTable",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"storedProcedureName": "[dbo].[InsertLogTable]",
-								"storedProcedureParameters": {
-									"Adls_Location": {
-										"value": {
-											"value": "@item().Adls_Location",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"FileName": {
-										"value": {
-											"value": "@item().FileName",
-											"type": "Expression"
-										},
-										"type": "String"
-									},
-									"Updated_On": {
-										"value": {
-											"value": "@formatDateTime(item().LastModifiedDate, 'yyyy-MM-dd HH:mm:ss.fff')",
-											"type": "Expression"
-										},
-										"type": "String"
-									}
-								}
-							},
-							"linkedServiceName": {
-								"referenceName": "AzureSqlDatabase",
-								"type": "LinkedServiceReference"
-							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "ForEach_Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[InsertLogTable]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
