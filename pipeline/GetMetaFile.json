@@ -101,25 +101,17 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@less(activity('Get_Meta_File').output.lastModified,utcNow() )",
+									"value": "@less(activity('Get_Meta_File').output.lastModified,startOfDay(utcNow()))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
 									{
-										"name": "Set variable1",
-										"type": "SetVariable",
+										"name": "Wait1",
+										"type": "Wait",
 										"dependsOn": [],
-										"policy": {
-											"secureOutput": false,
-											"secureInput": false
-										},
 										"userProperties": [],
 										"typeProperties": {
-											"variableName": "date",
-											"value": {
-												"value": "@utcNow()",
-												"type": "Expression"
-											}
+											"waitTimeInSeconds": 1
 										}
 									}
 								]
