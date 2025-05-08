@@ -119,10 +119,10 @@
 									},
 									"Updated_On": {
 										"value": {
-											"value": "@formatDateTime(item().LastModifiedDate, 'yyyy-MM-dd HH:mm:ss.fff')",
+											"value": "item().LastModifiedDate",
 											"type": "Expression"
 										},
-										"type": "String"
+										"type": "Datetime"
 									}
 								}
 							},
