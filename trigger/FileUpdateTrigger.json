@@ -8,6 +8,9 @@
 				"pipelineReference": {
 					"referenceName": "GetMetaFile",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"FileName": "@triggerBody().fileName"
 				}
 			}
 		],
