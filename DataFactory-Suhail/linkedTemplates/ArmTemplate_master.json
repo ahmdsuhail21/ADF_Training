@@ -63,10 +63,6 @@
 			"type": "int",
 			"defaultValue": 5
 		},
-		"FileUpdateTrigger_properties_GetMetaFile_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "@triggerBody().fileName"
-		},
 		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
 			"type": "string",
 			"defaultValue": "@triggerBody().fileName"
@@ -242,9 +238,6 @@
 					},
 					"triggerBlob_properties_typeProperties_scope": {
 						"value": "[parameters('triggerBlob_properties_typeProperties_scope')]"
-					},
-					"FileUpdateTrigger_properties_GetMetaFile_parameters_FileName": {
-						"value": "[parameters('FileUpdateTrigger_properties_GetMetaFile_parameters_FileName')]"
 					}
 				}
 			},

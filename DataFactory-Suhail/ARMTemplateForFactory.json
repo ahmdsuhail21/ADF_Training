@@ -63,10 +63,6 @@
 			"type": "int",
 			"defaultValue": 5
 		},
-		"FileUpdateTrigger_properties_GetMetaFile_parameters_FileName": {
-			"type": "string",
-			"defaultValue": "@triggerBody().fileName"
-		},
 		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
 			"type": "string",
 			"defaultValue": "@triggerBody().fileName"
@@ -1587,10 +1583,10 @@
 											},
 											"Updated_On": {
 												"value": {
-													"value": "@formatDateTime(item().LastModifiedDate, 'yyyy-MM-dd HH:mm:ss.fff')",
+													"value": "@formatDateTime(activity('Get_Meta_File').output.lastModified, 'yyyy-MM-dd HH:mm:ss.fff')",
 													"type": "Expression"
 												},
-												"type": "String"
+												"type": "Datetime"
 											}
 										}
 									},
@@ -1678,7 +1674,10 @@
 						"typeProperties": {
 							"source": {
 								"type": "AzureSqlSource",
-								"sqlReaderQuery": "Select FileName From Cntrl.MetaDataTable Where Status = 'Failure'",
+								"sqlReaderQuery": {
+									"value": "Select String_AGG(FileName+' ',',') as Files From Cntrl.MetaDataTable Where Status = 'Failure'",
+									"type": "Expression"
+								},
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
@@ -1725,7 +1724,7 @@
 										"headers": {},
 										"url": "https://prod-15.centralindia.logic.azure.com:443/workflows/23352561042d49169c3b53cbdf4ae83c/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=gu1wqFhu3Z17pGKgZJ0mbe3AIZHorSeHlj2Yj99NT4U",
 										"body": {
-											"value": "@pipeline().parameters.FileName",
+											"value": "{\n    \n    \"filename\":\"@{activity('Lookup_UnUpdatedFiles').output.value[0].Files}\",\n\n}",
 											"type": "Expression"
 										}
 									}
@@ -1736,11 +1735,6 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"FileName": {
-						"type": "string"
-					}
 				},
 				"variables": {
 					"OutDatedFiles": {
@@ -4665,18 +4659,8 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
-				"runtimeState": "Started",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "GetMetaFile",
-							"type": "PipelineReference"
-						},
-						"parameters": {
-							"FileName": "[parameters('FileUpdateTrigger_properties_GetMetaFile_parameters_FileName')]"
-						}
-					}
-				],
+				"runtimeState": "Stopped",
+				"pipelines": [],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
@@ -4684,14 +4668,11 @@
 						"interval": 1,
 						"startTime": "2025-05-08T09:55:00",
 						"endTime": "2025-05-20T09:30:00",
-						"timeZone": "India Standard Time",
-						"schedule": {}
+						"timeZone": "India Standard Time"
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/GetMetaFile')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/addDropFileTrigger')]",
