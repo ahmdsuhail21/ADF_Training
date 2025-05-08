@@ -119,7 +119,7 @@
 									},
 									"Updated_On": {
 										"value": {
-											"value": "item().LastModifiedDate",
+											"value": "@formatDateTime(activity('Get_Meta_File').output.lastModified, 'yyyy-MM-dd HH:mm:ss.fff')",
 											"type": "Expression"
 										},
 										"type": "Datetime"
