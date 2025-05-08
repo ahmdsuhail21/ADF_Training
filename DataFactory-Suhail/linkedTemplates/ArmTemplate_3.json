@@ -34,6 +34,10 @@
 		"triggerBlob_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		},
+		"FileUpdateTrigger_properties_GetMetaFile_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
 		}
 	},
 	"variables": {
@@ -1158,7 +1162,9 @@
 							"referenceName": "GetMetaFile",
 							"type": "PipelineReference"
 						},
-						"parameters": {}
+						"parameters": {
+							"FileName": "[parameters('FileUpdateTrigger_properties_GetMetaFile_parameters_FileName')]"
+						}
 					}
 				],
 				"type": "ScheduleTrigger",
@@ -1166,9 +1172,10 @@
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2025-05-08T09:30:00",
+						"startTime": "2025-05-08T09:45:00",
 						"endTime": "2025-05-20T09:30:00",
-						"timeZone": "India Standard Time"
+						"timeZone": "India Standard Time",
+						"schedule": {}
 					}
 				}
 			},
