@@ -1,0 +1,12 @@
+{
+	"name": "RestService_RapidApi",
+	"properties": {
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://car-api2.p.rapidapi.com",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
