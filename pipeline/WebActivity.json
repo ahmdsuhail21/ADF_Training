@@ -20,6 +20,14 @@
 				}
 			}
 		],
+		"variables": {
+			"apiOutput": {
+				"type": "String"
+			},
+			"output": {
+				"type": "Array"
+			}
+		},
 		"annotations": []
 	}
 }
