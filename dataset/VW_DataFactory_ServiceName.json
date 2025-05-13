@@ -1,0 +1,59 @@
+{
+	"name": "VW_DataFactory_ServiceName",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ServiceName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ChangeNumber",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "region",
+				"type": "nvarchar"
+			},
+			{
+				"name": "regionId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "platform",
+				"type": "nvarchar"
+			},
+			{
+				"name": "systemService",
+				"type": "nvarchar"
+			},
+			{
+				"name": "AddressPrefix",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NetworkFeature",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Location",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VW_DataFactory_ServiceName"
+		}
+	}
+}

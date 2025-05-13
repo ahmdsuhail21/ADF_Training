@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "ServiceTags_Public_20250428.json",
+				"fileName": "DataFactory_Service_API.csv",
 				"folderPath": "serviceTag",
 				"fileSystem": "data"
 			}
