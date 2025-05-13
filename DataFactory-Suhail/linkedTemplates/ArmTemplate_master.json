@@ -35,6 +35,22 @@
 			"type": "string",
 			"defaultValue": "https://storageaccsuhail.dfs.core.windows.net/"
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://SuhailVault.vault.azure.net/"
+		},
+		"AzureSqlDBVault_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserver.database.windows.net"
+		},
+		"AzureSqlDBVault_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "trainingDB"
+		},
+		"AzureSqlDBVault_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
 		"AzureSqlDatabase_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "trainserver.database.windows.net"
@@ -139,6 +155,9 @@
 					"AzureDataLakeStorage_properties_typeProperties_url": {
 						"value": "[parameters('AzureDataLakeStorage_properties_typeProperties_url')]"
 					},
+					"AzureKeyVault1_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+					},
 					"AzureSqlDatabase_properties_typeProperties_server": {
 						"value": "[parameters('AzureSqlDatabase_properties_typeProperties_server')]"
 					},
@@ -188,6 +207,15 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureSqlDBVault_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDBVault_properties_typeProperties_server')]"
+					},
+					"AzureSqlDBVault_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDBVault_properties_typeProperties_database')]"
+					},
+					"AzureSqlDBVault_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDBVault_properties_typeProperties_userName')]"
 					},
 					"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
 						"value": "[parameters('addDropFileTrigger_properties_SendEmail_parameters_FileName')]"

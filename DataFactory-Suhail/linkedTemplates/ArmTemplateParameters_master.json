@@ -26,6 +26,18 @@
 		"AzureDataLakeStorage_properties_typeProperties_url": {
 			"value": "https://storageaccsuhail.dfs.core.windows.net/"
 		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://SuhailVault.vault.azure.net/"
+		},
+		"AzureSqlDBVault_properties_typeProperties_server": {
+			"value": "trainserver.database.windows.net"
+		},
+		"AzureSqlDBVault_properties_typeProperties_database": {
+			"value": "trainingDB"
+		},
+		"AzureSqlDBVault_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		},
 		"AzureSqlDatabase_properties_typeProperties_server": {
 			"value": "trainserver.database.windows.net"
 		},
