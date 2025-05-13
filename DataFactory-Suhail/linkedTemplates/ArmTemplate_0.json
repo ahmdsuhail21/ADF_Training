@@ -132,6 +132,14 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"variables": {
+					"apiOutput": {
+						"type": "String"
+					},
+					"output": {
+						"type": "Array"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": []
@@ -365,6 +373,18 @@
 						"timeZone": "India Standard Time"
 					}
 				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
 			},
 			"dependsOn": []
 		},
@@ -731,61 +751,6 @@
 						"value": "@dataset().TableName",
 						"type": "Expression"
 					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable12')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "FileName",
-						"type": "varchar"
-					},
-					{
-						"name": "Adls_Location",
-						"type": "varchar"
-					},
-					{
-						"name": "LandingSchema",
-						"type": "varchar"
-					},
-					{
-						"name": "LandingTable",
-						"type": "varchar"
-					},
-					{
-						"name": "Load_Freq",
-						"type": "varchar"
-					},
-					{
-						"name": "SP_name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Source_Query",
-						"type": "nvarchar"
-					}
-				],
-				"typeProperties": {
-					"schema": "Cntrl",
-					"table": "MD_Lab2"
 				}
 			},
 			"dependsOn": [

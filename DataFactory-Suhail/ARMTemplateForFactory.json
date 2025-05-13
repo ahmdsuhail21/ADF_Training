@@ -2727,6 +2727,14 @@
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"variables": {
+					"apiOutput": {
+						"type": "String"
+					},
+					"output": {
+						"type": "Array"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": []
@@ -5548,6 +5556,18 @@
 				"[concat(variables('factoryId'), '/datasets/Customers')]",
 				"[concat(variables('factoryId'), '/datasets/DataFlowSQLOutput')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
 		}
 	]
 }
