@@ -7,6 +7,30 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "DataFactory-Suhail"
 		},
+		"AzureSqlDBVault_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserver.database.windows.net"
+		},
+		"AzureSqlDBVault_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "trainingDB"
+		},
+		"AzureSqlDBVault_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_ContainName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().folderPath"
+		},
+		"addDropFileTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		},
 		"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
 			"type": "int",
 			"defaultValue": 5
@@ -40,6 +64,267 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/sql_Adls_ServiceApi')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "DataFactory_ServiceAPI.csv",
+						"folderPath": "serviceTag",
+						"fileSystem": "data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDBVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('AzureSqlDBVault_properties_typeProperties_server')]",
+					"database": "[parameters('AzureSqlDBVault_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SQL",
+					"userName": "[parameters('AzureSqlDBVault_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault1",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "SuhailDB"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/addDropFileTrigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "SendEmail",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"FileName": "[parameters('addDropFileTrigger_properties_SendEmail_parameters_FileName')]",
+							"ContainName": "[parameters('addDropFileTrigger_properties_SendEmail_parameters_ContainName')]"
+						}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/data/blobs/Student1",
+					"blobPathEndsWith": ".csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('addDropFileTrigger_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated",
+						"Microsoft.Storage.BlobDeleted"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ADF_Lab2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup1",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": {
+									"value": "Select * from Cntrl.MD_Lab2",
+									"type": "Expression"
+								},
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "LookUp_Lab2",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup1').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "CopyData_Adls_Sql",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"preCopyScript": {
+												"value": "@{concat('Truncate Table ',item().LandingSchema,'.',item().LandingTable)}",
+												"type": "Expression"
+											},
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false,
+											"tableOption": "autoCreate",
+											"disableMetricsCollection": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "AdlsSql_Lab2",
+											"type": "DatasetReference",
+											"parameters": {
+												"DirectoryName": {
+													"value": "@item().Adls_Location",
+													"type": "Expression"
+												},
+												"FileName": {
+													"value": "@item().FileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "AzureSqlTableLab2",
+											"type": "DatasetReference",
+											"parameters": {
+												"SchemaName": {
+													"value": "@item().LandingSchema",
+													"type": "Expression"
+												},
+												"TableName": {
+													"value": "@item().LandingTable",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "SP_Populate_Mart",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "CopyData_Adls_Sql",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": {
+											"value": "@item().SP_name",
+											"type": "Expression"
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": [],
+				"lastPublishTime": "2025-04-28T09:53:55Z"
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AdlsToSql')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -1699,6 +1984,76 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ServiceTag_ToCsv')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobFSWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "VW_DataFactory_ServiceName",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "sql_Adls_ServiceApi",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/sql_Adls_ServiceApi')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Service_Tags')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2135,6 +2490,143 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Web1",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {
+								"x-rapidapi-key": "60c2b31d1cmshd446d7e4c383ac7p158f95jsn38cdf702a25a",
+								"x-rapidapi-host": "car-api2.p.rapidapi.com"
+							},
+							"url": "https://car-api2.p.rapidapi.com/api/models?sort=id&direction=asc&year=2020&verbose=yes"
+						}
+					},
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"additionalHeaders": {
+									"x-rapidapi-key": "60c2b31d1cmshd446d7e4c383ac7p158f95jsn38cdf702a25a",
+									"x-rapidapi-host": "car-api2.p.rapidapi.com"
+								},
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['data']['id']"
+										},
+										"sink": {
+											"name": "id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data']['make_id']"
+										},
+										"sink": {
+											"name": "make_id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data']['name']"
+										},
+										"sink": {
+											"name": "name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data']['make']['id']"
+										},
+										"sink": {
+											"name": "make_make_id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['data']['make']['name']"
+										},
+										"sink": {
+											"name": "make_name",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": "$['data']",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CarRaidApi",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CarModel",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Combo_ABC_51')]",
 			"type": "Microsoft.DataFactory/factories/triggers",
 			"apiVersion": "2018-06-01",
@@ -2206,507 +2698,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OrderStatus')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Order2023",
-								"type": "DatasetReference"
-							},
-							"name": "Order2023"
-						},
-						{
-							"dataset": {
-								"referenceName": "Order2024",
-								"type": "DatasetReference"
-							},
-							"name": "Order2024"
-						},
-						{
-							"dataset": {
-								"referenceName": "Order2025",
-								"type": "DatasetReference"
-							},
-							"name": "Order2025"
-						},
-						{
-							"dataset": {
-								"referenceName": "Product",
-								"type": "DatasetReference"
-							},
-							"name": "Product"
-						},
-						{
-							"dataset": {
-								"referenceName": "SalesExe",
-								"type": "DatasetReference"
-							},
-							"name": "SlesExe"
-						},
-						{
-							"dataset": {
-								"referenceName": "Customer",
-								"type": "DatasetReference"
-							},
-							"name": "Customer"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "AzureSqlTable14",
-								"type": "DatasetReference"
-							},
-							"name": "AggregatedData"
-						},
-						{
-							"dataset": {
-								"referenceName": "Orderdata",
-								"type": "DatasetReference"
-							},
-							"name": "OrderDataFinal"
-						},
-						{
-							"dataset": {
-								"referenceName": "Parquet1",
-								"type": "DatasetReference"
-							},
-							"name": "OrderParque"
-						}
-					],
-					"transformations": [
-						{
-							"name": "OrderData"
-						},
-						{
-							"name": "TypeCasting"
-						},
-						{
-							"name": "CustCast"
-						},
-						{
-							"name": "OrdersProducts"
-						},
-						{
-							"name": "select1"
-						},
-						{
-							"name": "OrderProdCust"
-						},
-						{
-							"name": "select2"
-						},
-						{
-							"name": "OrderFinal"
-						},
-						{
-							"name": "aggregate1"
-						},
-						{
-							"name": "sort1"
-						},
-						{
-							"name": "aggregateTotalQuantity"
-						},
-						{
-							"name": "window2"
-						},
-						{
-							"name": "TopProdInEachCategory"
-						},
-						{
-							"name": "DataSplit"
-						},
-						{
-							"name": "select3"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          OrderID as string,",
-						"          OrderDate as string,",
-						"          ProductID as string,",
-						"          Quantity as string,",
-						"          UnitPrice as string,",
-						"          CustomerID as string,",
-						"          SalesExecID as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> Order2023",
-						"source(output(",
-						"          OrderID as string,",
-						"          OrderDate as string,",
-						"          ProductID as string,",
-						"          Quantity as string,",
-						"          UnitPrice as string,",
-						"          CustomerID as string,",
-						"          SalesExecID as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> Order2024",
-						"source(output(",
-						"          OrderID as string,",
-						"          OrderDate as string,",
-						"          ProductID as string,",
-						"          Quantity as string,",
-						"          UnitPrice as string,",
-						"          CustomerID as string,",
-						"          SalesExecID as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> Order2025",
-						"source(output(",
-						"          ProductID as string,",
-						"          ProductName as string,",
-						"          {Product Category} as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> Product",
-						"source(output(",
-						"          SalesExecID as string,",
-						"          Name as string,",
-						"          Age as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> SlesExe",
-						"source(output(",
-						"          CustomerID as string,",
-						"          CustomerName as string,",
-						"          Phone as string,",
-						"          City as string,",
-						"          Country as string,",
-						"          Age as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> Customer",
-						"Order2023, Order2024, Order2025 union(byName: true)~> OrderData",
-						"OrderData cast(output(",
-						"          OrderDate as date 'yyyy-MM-dd',",
-						"          Quantity as integer,",
-						"          UnitPrice as float",
-						"     ),",
-						"     errors: true) ~> TypeCasting",
-						"Customer cast(output(",
-						"          Age as integer",
-						"     ),",
-						"     errors: true) ~> CustCast",
-						"TypeCasting, Product join(OrderData@ProductID == Product@ProductID,",
-						"     joinType:'left',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> OrdersProducts",
-						"OrdersProducts select(mapColumn(",
-						"          OrderID,",
-						"          OrderDate,",
-						"          Quantity,",
-						"          UnitPrice,",
-						"          CustomerID,",
-						"          SalesExecID,",
-						"          ProductID = OrderData@ProductID,",
-						"          ProductName,",
-						"          {Product Category}",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1, CustCast join(select1@CustomerID == Customer@CustomerID,",
-						"     joinType:'left',",
-						"     matchType:'exact',",
-						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> OrderProdCust",
-						"OrderProdCust select(mapColumn(",
-						"          OrderID,",
-						"          OrderDate,",
-						"          Quantity,",
-						"          UnitPrice,",
-						"          SalesExecID,",
-						"          ProductID,",
-						"          ProductName,",
-						"          {Product Category},",
-						"          CustomerID = Customer@CustomerID,",
-						"          CustomerName,",
-						"          Phone,",
-						"          City,",
-						"          Country,",
-						"          Age",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select2",
-						"select2 derive(CustomerCat = case\r",
-						"(\r",
-						"    Age<=20,'Young' ,\r",
-						" Age>20 && Age<30,'Adult' ,\r",
-						" 'Senior'\r",
-						" )) ~> OrderFinal",
-						"OrderFinal aggregate(groupBy(ProductName),",
-						"     TotalOrders = sum(Quantity),",
-						"          OrderAmount = sum(Quantity*UnitPrice)) ~> aggregate1",
-						"aggregate1 sort(desc(TotalOrders, true)) ~> sort1",
-						"OrderFinal aggregate(groupBy({Product Category},",
-						"          ProductName),",
-						"     TotalQuantity = sum(Quantity)) ~> aggregateTotalQuantity",
-						"aggregateTotalQuantity window(over({Product Category}),",
-						"     desc(TotalQuantity, true),",
-						"     ProdRank = rank()) ~> window2",
-						"window2 filter(ProdRank==1) ~> TopProdInEachCategory",
-						"OrderFinal split(CustomerCat=='Young',",
-						"     CustomerCat=='Adult',",
-						"     disjoint: false) ~> DataSplit@(Young, Adult, Senior)",
-						"OrderFinal select(mapColumn(",
-						"          OrderID,",
-						"          OrderDate,",
-						"          Quantity,",
-						"          UnitPrice,",
-						"          SalesExecID,",
-						"          ProductID,",
-						"          ProductName,",
-						"          Product_Category = {Product Category},",
-						"          CustomerID,",
-						"          CustomerName,",
-						"          Phone,",
-						"          City,",
-						"          Country,",
-						"          Age,",
-						"          CustomerCat",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select3",
-						"window2 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     truncate:true,",
-						"     format: 'table',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> AggregatedData",
-						"OrderFinal sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     input(",
-						"          OrderID as string,",
-						"          OrderDate as string,",
-						"          ProductID as string,",
-						"          Quantity as string,",
-						"          UnitPrice as string,",
-						"          CustomerID as string,",
-						"          SalesExecID as string",
-						"     ),",
-						"     partitionFileNames:['OrderDataFinal'],",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> OrderDataFinal",
-						"select3 sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'parquet',",
-						"     partitionFileNames:['Order.parquet'],",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> OrderParque"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "Orders",
-								"type": "DatasetReference"
-							},
-							"name": "Orders"
-						},
-						{
-							"dataset": {
-								"referenceName": "Products",
-								"type": "DatasetReference"
-							},
-							"name": "Products"
-						},
-						{
-							"dataset": {
-								"referenceName": "Customers",
-								"type": "DatasetReference"
-							},
-							"name": "Customers"
-						}
-					],
-					"sinks": [
-						{
-							"dataset": {
-								"referenceName": "DataFlowSQLOutput",
-								"type": "DatasetReference"
-							},
-							"name": "sink1"
-						}
-					],
-					"transformations": [
-						{
-							"name": "JanData"
-						},
-						{
-							"name": "cast1"
-						},
-						{
-							"name": "cast2"
-						},
-						{
-							"name": "select1"
-						},
-						{
-							"name": "derivedColumn1"
-						}
-					],
-					"scriptLines": [
-						"source(output(",
-						"          OrderID as string,",
-						"          OrderDate as string,",
-						"          CustomerID as string,",
-						"          ProductID as string,",
-						"          Quantity as string,",
-						"          TotalAmount as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> Orders",
-						"source(output(",
-						"          ProductID as string,",
-						"          ProductName as string,",
-						"          Category as string,",
-						"          Price as string,",
-						"          StockQuantity as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> Products",
-						"source(output(",
-						"          CustomerID as string,",
-						"          FirstName as string,",
-						"          LastName as string,",
-						"          Email as string,",
-						"          Phone as string,",
-						"          City as string,",
-						"          Country as string",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false) ~> Customers",
-						"cast1 filter(month(OrderDate)==3) ~> JanData",
-						"Orders cast(output(",
-						"          OrderDate as date 'yyyy-MM-dd',",
-						"          Quantity as integer,",
-						"          TotalAmount as double",
-						"     ),",
-						"     errors: true) ~> cast1",
-						"Products cast(output(",
-						"          Price as double,",
-						"          StockQuantity as integer",
-						"     ),",
-						"     errors: true) ~> cast2",
-						"cast2 select(mapColumn(",
-						"          ProductID,",
-						"          ProductName,",
-						"          Prod_Cat = Category,",
-						"          Price,",
-						"          StockQuantity",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"Customers derive(Phone_Validity = iif(length(Phone)==10,'Valid','Invalid')) ~> derivedColumn1",
-						"JanData sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     deletable:false,",
-						"     insertable:true,",
-						"     updateable:false,",
-						"     upsertable:false,",
-						"     recreate:true,",
-						"     format: 'table',",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
-					]
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OrderDataFlow')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Data flow1",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "OrderStatus",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"Order2023": {},
-									"Order2024": {},
-									"Order2025": {},
-									"Product": {},
-									"SlesExe": {},
-									"Customer": {},
-									"AggregatedData": {},
-									"OrderDataFinal": {},
-									"OrderParque": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/OrderStatus')]"
-			]
 		}
 	]
 }

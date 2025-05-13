@@ -50,6 +50,9 @@
 		"MyApiLinkedService_properties_typeProperties_url": {
 			"value": "https://reqres.in/api/users"
 		},
+		"RestService_RapidApi_properties_typeProperties_url": {
+			"value": "https://car-api2.p.rapidapi.com"
+		},
 		"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
 			"value": 5
 		},
