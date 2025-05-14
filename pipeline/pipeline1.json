@@ -3,27 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Web1",
-				"type": "WebActivity",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"method": "GET",
-					"headers": {
-						"x-rapidapi-key": "60c2b31d1cmshd446d7e4c383ac7p158f95jsn38cdf702a25a",
-						"x-rapidapi-host": "car-api2.p.rapidapi.com"
-					},
-					"url": "https://car-api2.p.rapidapi.com/api/models?sort=id&direction=asc&year=2020&verbose=yes"
-				}
-			},
-			{
 				"name": "Copy data1",
 				"type": "Copy",
 				"dependsOn": [],
@@ -51,9 +30,9 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
+						"preCopyScript": "Truncate Table [dbo].[CarModel]",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
-						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
@@ -62,47 +41,34 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['data']['id']"
+									"path": "['id']"
 								},
 								"sink": {
-									"name": "id",
-									"type": "Int32"
+									"name": "Id"
 								}
 							},
 							{
 								"source": {
-									"path": "$['data']['make_id']"
+									"path": "['make_id']"
 								},
 								"sink": {
-									"name": "make_id",
-									"type": "Int32"
+									"name": "Make_Id"
 								}
 							},
 							{
 								"source": {
-									"path": "$['data']['name']"
+									"path": "['name']"
 								},
 								"sink": {
-									"name": "name",
-									"type": "String"
+									"name": "Model_Name"
 								}
 							},
 							{
 								"source": {
-									"path": "$['data']['make']['id']"
+									"path": "['make']['name']"
 								},
 								"sink": {
-									"name": "make_make_id",
-									"type": "Int32"
-								}
-							},
-							{
-								"source": {
-									"path": "$['data']['make']['name']"
-								},
-								"sink": {
-									"name": "make_name",
-									"type": "String"
+									"name": "Make_Name"
 								}
 							}
 						],
