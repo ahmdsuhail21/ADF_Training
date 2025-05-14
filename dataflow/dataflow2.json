@@ -1,0 +1,41 @@
+{
+	"name": "dataflow2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Car_Combined",
+						"type": "DatasetReference"
+					},
+					"name": "CarCombined"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          {Car Model} as string,",
+				"          Condition as string,",
+				"          Mileage as string,",
+				"          {Price (USD)} as string,",
+				"          {Monthly Payment} as string,",
+				"          {Dealer Name} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> CarCombined",
+				"CarCombined derive(Manufacturing_Year = left({Car Model}, 4),",
+				"          Make_Name = split({Car Model},' ')[2],",
+				"          Model_Name = split({Car Model},' ')[3]\r",
+				",",
+				"          Variant_Name = ERROR_FUNCTION('')) ~> derivedColumn1"
+			]
+		}
+	}
+}

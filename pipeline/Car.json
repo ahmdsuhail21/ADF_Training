@@ -1,10 +1,12 @@
 {
-	"name": "pipeline1",
+	"name": "Car",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "CarModel",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -88,6 +90,43 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Web1",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"headers": {
+						"x-rapidapi-key": "60c2b31d1cmshd446d7e4c383ac7p158f95jsn38cdf702a25a",
+						"x-rapidapi-host": "car-api2.p.rapidapi.com"
+					},
+					"url": "https://car-api2.p.rapidapi.com/api/mileages?direction=asc&verbose=yes&sort=id"
+				}
+			},
+			{
+				"name": "CarMileage",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"enableStaging": false
+				}
 			}
 		],
 		"annotations": []

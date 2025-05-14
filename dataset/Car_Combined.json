@@ -1,0 +1,49 @@
+{
+	"name": "Car_Combined",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "combined_data.csv",
+				"folderPath": "Practice",
+				"fileSystem": "data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Car Model",
+				"type": "String"
+			},
+			{
+				"name": "Condition",
+				"type": "String"
+			},
+			{
+				"name": "Mileage",
+				"type": "String"
+			},
+			{
+				"name": "Price (USD)",
+				"type": "String"
+			},
+			{
+				"name": "Monthly Payment",
+				"type": "String"
+			},
+			{
+				"name": "Dealer Name",
+				"type": "String"
+			}
+		]
+	}
+}
