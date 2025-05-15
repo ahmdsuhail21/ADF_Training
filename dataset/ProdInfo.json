@@ -1,0 +1,53 @@
+{
+	"name": "ProdInfo",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "prd_info.csv",
+				"folderPath": "source_crm",
+				"fileSystem": "data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "prd_id",
+				"type": "String"
+			},
+			{
+				"name": "prd_key",
+				"type": "String"
+			},
+			{
+				"name": "prd_nm",
+				"type": "String"
+			},
+			{
+				"name": "prd_cost",
+				"type": "String"
+			},
+			{
+				"name": "prd_line",
+				"type": "String"
+			},
+			{
+				"name": "prd_start_dt",
+				"type": "String"
+			},
+			{
+				"name": "prd_end_dt",
+				"type": "String"
+			}
+		]
+	}
+}

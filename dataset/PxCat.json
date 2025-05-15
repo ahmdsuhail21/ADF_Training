@@ -1,0 +1,41 @@
+{
+	"name": "PxCat",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "PX_CAT_G1V2.csv",
+				"folderPath": "source_erp",
+				"fileSystem": "data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ID",
+				"type": "String"
+			},
+			{
+				"name": "CAT",
+				"type": "String"
+			},
+			{
+				"name": "SUBCAT",
+				"type": "String"
+			},
+			{
+				"name": "MAINTENANCE",
+				"type": "String"
+			}
+		]
+	}
+}

@@ -1,0 +1,61 @@
+{
+	"name": "SalesDetails",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "sales_details.csv",
+				"folderPath": "source_crm",
+				"fileSystem": "data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "sls_ord_num",
+				"type": "String"
+			},
+			{
+				"name": "sls_prd_key",
+				"type": "String"
+			},
+			{
+				"name": "sls_cust_id",
+				"type": "String"
+			},
+			{
+				"name": "sls_order_dt",
+				"type": "String"
+			},
+			{
+				"name": "sls_ship_dt",
+				"type": "String"
+			},
+			{
+				"name": "sls_due_dt",
+				"type": "String"
+			},
+			{
+				"name": "sls_sales",
+				"type": "String"
+			},
+			{
+				"name": "sls_quantity",
+				"type": "String"
+			},
+			{
+				"name": "sls_price",
+				"type": "String"
+			}
+		]
+	}
+}
