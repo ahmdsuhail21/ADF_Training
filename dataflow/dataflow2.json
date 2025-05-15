@@ -12,7 +12,15 @@
 					"name": "CarCombined"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CarCombined",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "derivedColumn1"
@@ -32,9 +40,17 @@
 				"     ignoreNoFilesFound: false) ~> CarCombined",
 				"CarCombined derive(Manufacturing_Year = left({Car Model}, 4),",
 				"          Make_Name = split({Car Model},' ')[2],",
-				"          Model_Name = split({Car Model},' ')[3]\r",
-				",",
-				"          Variant_Name = ERROR_FUNCTION('')) ~> derivedColumn1"
+				"          Model_Name = split({Car Model},' ')[3]) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
