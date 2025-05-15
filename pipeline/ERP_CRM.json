@@ -73,8 +73,14 @@
 								},
 								"sink": {
 									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "@concat('Truncate Table ',item().LandingSchema,'.',item().LandingTable)",
+										"type": "Expression"
+									},
 									"writeBehavior": "insert",
-									"sqlWriterUseTableLock": false
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
 								},
 								"enableStaging": false,
 								"translator": {
@@ -93,6 +99,10 @@
 									"parameters": {
 										"DirectoryName": {
 											"value": "@item().Adls_Location",
+											"type": "Expression"
+										},
+										"FileName": {
+											"value": "@item().FileName",
 											"type": "Expression"
 										}
 									}
@@ -119,11 +129,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"DirectoryName": {
-				"type": "string"
-			}
-		},
 		"annotations": []
 	}
 }
