@@ -1,0 +1,43 @@
+{
+	"name": "MetaCrmErp",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "FileName",
+				"type": "varchar"
+			},
+			{
+				"name": "Adls_Location",
+				"type": "varchar"
+			},
+			{
+				"name": "LandingSchema",
+				"type": "varchar"
+			},
+			{
+				"name": "LandingTable",
+				"type": "varchar"
+			},
+			{
+				"name": "LastModifiedDate",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "Cntrl",
+			"table": "Meta_Crm_Erp_Source"
+		}
+	}
+}
