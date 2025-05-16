@@ -798,6 +798,36 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Stored procedure Staging",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Copy Files",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": {
+											"value": "@item().SP_Trans_Name",
+											"type": "Expression"
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "AzureSqlDatabase",
+										"type": "LinkedServiceReference"
+									}
 								}
 							]
 						}
@@ -811,7 +841,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MetaCrmErp')]",
 				"[concat(variables('factoryId'), '/datasets/Crm_Erp')]",
-				"[concat(variables('factoryId'), '/datasets/Crm_Erp_Source')]"
+				"[concat(variables('factoryId'), '/datasets/Crm_Erp_Source')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase')]"
 			]
 		},
 		{
