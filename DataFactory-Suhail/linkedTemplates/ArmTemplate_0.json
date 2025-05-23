@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSqlDatabase'"
 		},
+		"SuhailDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SuhailDB'"
+		},
 		"AlanDB_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "trainingserv11.database.windows.net"
@@ -58,6 +62,18 @@
 		"RestService_RapidApi_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://car-api2.p.rapidapi.com"
+		},
+		"SuhailDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserver.database.windows.net"
+		},
+		"SuhailDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adfTraining"
+		},
+		"SuhailDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
 		}
 	},
 	"variables": {
@@ -370,6 +386,28 @@
 					"url": "[parameters('RestService_RapidApi_properties_typeProperties_url')]",
 					"enableServerCertificateValidation": true,
 					"authenticationType": "Anonymous"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SuhailDB')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('SuhailDB_properties_typeProperties_server')]",
+					"database": "[parameters('SuhailDB_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": true,
+					"authenticationType": "SQL",
+					"userName": "[parameters('SuhailDB_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('SuhailDB_password')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -722,42 +760,6 @@
 				"typeProperties": {
 					"schema": "Landing",
 					"table": "Customers"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlTable11')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabase",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"SchemaName": {
-						"type": "string",
-						"defaultValue": "orders.csv"
-					},
-					"TableName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": {
-						"value": "@dataset().SchemaName",
-						"type": "Expression"
-					},
-					"table": {
-						"value": "@dataset().TableName",
-						"type": "Expression"
-					}
 				}
 			},
 			"dependsOn": [

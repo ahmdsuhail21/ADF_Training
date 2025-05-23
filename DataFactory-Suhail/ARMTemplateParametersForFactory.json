@@ -14,6 +14,9 @@
 		"AzureSqlDatabase_password": {
 			"value": ""
 		},
+		"SuhailDB_password": {
+			"value": ""
+		},
 		"AlanDB_properties_typeProperties_server": {
 			"value": "trainingserv11.database.windows.net"
 		},
@@ -52,6 +55,15 @@
 		},
 		"RestService_RapidApi_properties_typeProperties_url": {
 			"value": "https://car-api2.p.rapidapi.com"
+		},
+		"SuhailDB_properties_typeProperties_server": {
+			"value": "trainserver.database.windows.net"
+		},
+		"SuhailDB_properties_typeProperties_database": {
+			"value": "adfTraining"
+		},
+		"SuhailDB_properties_typeProperties_userName": {
+			"value": "sqladmin"
 		},
 		"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
 			"value": 5

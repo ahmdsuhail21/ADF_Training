@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'AzureSqlDatabase'"
 		},
+		"SuhailDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SuhailDB'"
+		},
 		"AlanDB_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "trainingserv11.database.windows.net"
@@ -70,6 +74,18 @@
 		"RestService_RapidApi_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://car-api2.p.rapidapi.com"
+		},
+		"SuhailDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserver.database.windows.net"
+		},
+		"SuhailDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adfTraining"
+		},
+		"SuhailDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
 		},
 		"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
 			"type": "int",
@@ -147,6 +163,9 @@
 					"AzureSqlDatabase_password": {
 						"value": "[parameters('AzureSqlDatabase_password')]"
 					},
+					"SuhailDB_password": {
+						"value": "[parameters('SuhailDB_password')]"
+					},
 					"AlanDB_properties_typeProperties_server": {
 						"value": "[parameters('AlanDB_properties_typeProperties_server')]"
 					},
@@ -176,6 +195,15 @@
 					},
 					"RestService_RapidApi_properties_typeProperties_url": {
 						"value": "[parameters('RestService_RapidApi_properties_typeProperties_url')]"
+					},
+					"SuhailDB_properties_typeProperties_server": {
+						"value": "[parameters('SuhailDB_properties_typeProperties_server')]"
+					},
+					"SuhailDB_properties_typeProperties_database": {
+						"value": "[parameters('SuhailDB_properties_typeProperties_database')]"
+					},
+					"SuhailDB_properties_typeProperties_userName": {
+						"value": "[parameters('SuhailDB_properties_typeProperties_userName')]"
 					}
 				}
 			},
@@ -298,6 +326,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suhail_ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "DataFactory-Suhail_ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suhail_ArmTemplate_4')]"
 			]
 		}
 	]
