@@ -45,6 +45,7 @@
 						"value": "@activity('Lookup1').output.value",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Copy data1",
@@ -66,6 +67,10 @@
 								},
 								"sink": {
 									"type": "AzureSqlSink",
+									"preCopyScript": {
+										"value": "@concat('Truncate Table Landing.',item().SourceTable)",
+										"type": "Expression"
+									},
 									"writeBehavior": "insert",
 									"sqlWriterUseTableLock": false,
 									"tableOption": "autoCreate",
