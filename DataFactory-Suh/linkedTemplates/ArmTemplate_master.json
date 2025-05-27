@@ -1,0 +1,422 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "DataFactory-Suh"
+		},
+		"AlanDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AlanDB'"
+		},
+		"AzureDataLakeStorage_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage'"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"AzureSqlDatabase_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureSqlDatabase'"
+		},
+		"SuhailDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SuhailDB'"
+		},
+		"Suhail_sql_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'Suhail_sql'"
+		},
+		"practiceDB_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'practiceDB'"
+		},
+		"AlanDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainingserv11.database.windows.net"
+		},
+		"AlanDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "training_DB"
+		},
+		"AlanDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"AzureDataLakeStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://storageaccsuhail.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://storagesuhail.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://SuhailVault.vault.azure.net/"
+		},
+		"AzureSqlDBVault_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserver.database.windows.net"
+		},
+		"AzureSqlDBVault_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "trainingDB"
+		},
+		"AzureSqlDBVault_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"AzureSqlDatabase_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserver.database.windows.net"
+		},
+		"AzureSqlDatabase_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "trainingDB"
+		},
+		"AzureSqlDatabase_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"MyApiLinkedService_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://reqres.in/api/users"
+		},
+		"RestService_RapidApi_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://car-api2.p.rapidapi.com"
+		},
+		"SuhailDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserver.database.windows.net"
+		},
+		"SuhailDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adfTraining"
+		},
+		"SuhailDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"Suhail_sql_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserversuh.database.windows.net"
+		},
+		"Suhail_sql_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "DbTraining"
+		},
+		"Suhail_sql_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"practiceDB_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "trainserversuh.database.windows.net"
+		},
+		"practiceDB_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "PracticeDB"
+		},
+		"practiceDB_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "sqladmin"
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_B": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_C": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().fileName"
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_ContainName": {
+			"type": "string",
+			"defaultValue": "@triggerBody().folderPath"
+		},
+		"addDropFileTrigger_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		},
+		"triggerBlob_properties_Combo_ABC_parameters_A": {
+			"type": "int",
+			"defaultValue": 10
+		},
+		"triggerBlob_properties_Combo_ABC_parameters_B": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"triggerBlob_properties_Combo_ABC_parameters_C": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"triggerBlob_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "DataFactory-Suh_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AlanDB_password": {
+						"value": "[parameters('AlanDB_password')]"
+					},
+					"AzureDataLakeStorage_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage_accountKey')]"
+					},
+					"AzureDataLakeStorage1_accountKey": {
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					},
+					"AzureSqlDatabase_password": {
+						"value": "[parameters('AzureSqlDatabase_password')]"
+					},
+					"SuhailDB_password": {
+						"value": "[parameters('SuhailDB_password')]"
+					},
+					"Suhail_sql_password": {
+						"value": "[parameters('Suhail_sql_password')]"
+					},
+					"practiceDB_password": {
+						"value": "[parameters('practiceDB_password')]"
+					},
+					"AlanDB_properties_typeProperties_server": {
+						"value": "[parameters('AlanDB_properties_typeProperties_server')]"
+					},
+					"AlanDB_properties_typeProperties_database": {
+						"value": "[parameters('AlanDB_properties_typeProperties_database')]"
+					},
+					"AlanDB_properties_typeProperties_userName": {
+						"value": "[parameters('AlanDB_properties_typeProperties_userName')]"
+					},
+					"AzureDataLakeStorage_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage_properties_typeProperties_url')]"
+					},
+					"AzureDataLakeStorage1_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]"
+					},
+					"AzureKeyVault1_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+					},
+					"AzureSqlDatabase_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDatabase_properties_typeProperties_server')]"
+					},
+					"AzureSqlDatabase_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDatabase_properties_typeProperties_database')]"
+					},
+					"AzureSqlDatabase_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDatabase_properties_typeProperties_userName')]"
+					},
+					"MyApiLinkedService_properties_typeProperties_url": {
+						"value": "[parameters('MyApiLinkedService_properties_typeProperties_url')]"
+					},
+					"RestService_RapidApi_properties_typeProperties_url": {
+						"value": "[parameters('RestService_RapidApi_properties_typeProperties_url')]"
+					},
+					"SuhailDB_properties_typeProperties_server": {
+						"value": "[parameters('SuhailDB_properties_typeProperties_server')]"
+					},
+					"SuhailDB_properties_typeProperties_database": {
+						"value": "[parameters('SuhailDB_properties_typeProperties_database')]"
+					},
+					"SuhailDB_properties_typeProperties_userName": {
+						"value": "[parameters('SuhailDB_properties_typeProperties_userName')]"
+					},
+					"Suhail_sql_properties_typeProperties_server": {
+						"value": "[parameters('Suhail_sql_properties_typeProperties_server')]"
+					},
+					"Suhail_sql_properties_typeProperties_database": {
+						"value": "[parameters('Suhail_sql_properties_typeProperties_database')]"
+					},
+					"Suhail_sql_properties_typeProperties_userName": {
+						"value": "[parameters('Suhail_sql_properties_typeProperties_userName')]"
+					},
+					"practiceDB_properties_typeProperties_server": {
+						"value": "[parameters('practiceDB_properties_typeProperties_server')]"
+					},
+					"practiceDB_properties_typeProperties_database": {
+						"value": "[parameters('practiceDB_properties_typeProperties_database')]"
+					},
+					"practiceDB_properties_typeProperties_userName": {
+						"value": "[parameters('practiceDB_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "DataFactory-Suh_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suh_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "DataFactory-Suh_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suh_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "DataFactory-Suh_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suh_ArmTemplate_2')]"
+			]
+		},
+		{
+			"name": "DataFactory-Suh_ArmTemplate_4",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureSqlDBVault_properties_typeProperties_server": {
+						"value": "[parameters('AzureSqlDBVault_properties_typeProperties_server')]"
+					},
+					"AzureSqlDBVault_properties_typeProperties_database": {
+						"value": "[parameters('AzureSqlDBVault_properties_typeProperties_database')]"
+					},
+					"AzureSqlDBVault_properties_typeProperties_userName": {
+						"value": "[parameters('AzureSqlDBVault_properties_typeProperties_userName')]"
+					},
+					"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
+						"value": "[parameters('addDropFileTrigger_properties_SendEmail_parameters_FileName')]"
+					},
+					"addDropFileTrigger_properties_SendEmail_parameters_ContainName": {
+						"value": "[parameters('addDropFileTrigger_properties_SendEmail_parameters_ContainName')]"
+					},
+					"addDropFileTrigger_properties_typeProperties_scope": {
+						"value": "[parameters('addDropFileTrigger_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suh_ArmTemplate_3')]"
+			]
+		},
+		{
+			"name": "DataFactory-Suh_ArmTemplate_5",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_5.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
+						"value": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_A')]"
+					},
+					"Combo_ABC_51_properties_Combo_ABC_parameters_B": {
+						"value": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_B')]"
+					},
+					"Combo_ABC_51_properties_Combo_ABC_parameters_C": {
+						"value": "[parameters('Combo_ABC_51_properties_Combo_ABC_parameters_C')]"
+					},
+					"triggerBlob_properties_Combo_ABC_parameters_A": {
+						"value": "[parameters('triggerBlob_properties_Combo_ABC_parameters_A')]"
+					},
+					"triggerBlob_properties_Combo_ABC_parameters_B": {
+						"value": "[parameters('triggerBlob_properties_Combo_ABC_parameters_B')]"
+					},
+					"triggerBlob_properties_Combo_ABC_parameters_C": {
+						"value": "[parameters('triggerBlob_properties_Combo_ABC_parameters_C')]"
+					},
+					"triggerBlob_properties_typeProperties_scope": {
+						"value": "[parameters('triggerBlob_properties_typeProperties_scope')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'DataFactory-Suh_ArmTemplate_4')]"
+			]
+		}
+	]
+}

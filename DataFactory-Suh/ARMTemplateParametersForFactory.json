@@ -1,0 +1,129 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "DataFactory-Suh"
+		},
+		"AlanDB_password": {
+			"value": ""
+		},
+		"AzureDataLakeStorage_accountKey": {
+			"value": ""
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"value": ""
+		},
+		"AzureSqlDatabase_password": {
+			"value": ""
+		},
+		"SuhailDB_password": {
+			"value": ""
+		},
+		"Suhail_sql_password": {
+			"value": ""
+		},
+		"practiceDB_password": {
+			"value": ""
+		},
+		"AlanDB_properties_typeProperties_server": {
+			"value": "trainingserv11.database.windows.net"
+		},
+		"AlanDB_properties_typeProperties_database": {
+			"value": "training_DB"
+		},
+		"AlanDB_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		},
+		"AzureDataLakeStorage_properties_typeProperties_url": {
+			"value": "https://storageaccsuhail.dfs.core.windows.net/"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"value": "https://storagesuhail.dfs.core.windows.net/"
+		},
+		"AzureKeyVault1_properties_typeProperties_baseUrl": {
+			"value": "https://SuhailVault.vault.azure.net/"
+		},
+		"AzureSqlDBVault_properties_typeProperties_server": {
+			"value": "trainserver.database.windows.net"
+		},
+		"AzureSqlDBVault_properties_typeProperties_database": {
+			"value": "trainingDB"
+		},
+		"AzureSqlDBVault_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		},
+		"AzureSqlDatabase_properties_typeProperties_server": {
+			"value": "trainserver.database.windows.net"
+		},
+		"AzureSqlDatabase_properties_typeProperties_database": {
+			"value": "trainingDB"
+		},
+		"AzureSqlDatabase_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		},
+		"MyApiLinkedService_properties_typeProperties_url": {
+			"value": "https://reqres.in/api/users"
+		},
+		"RestService_RapidApi_properties_typeProperties_url": {
+			"value": "https://car-api2.p.rapidapi.com"
+		},
+		"SuhailDB_properties_typeProperties_server": {
+			"value": "trainserver.database.windows.net"
+		},
+		"SuhailDB_properties_typeProperties_database": {
+			"value": "adfTraining"
+		},
+		"SuhailDB_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		},
+		"Suhail_sql_properties_typeProperties_server": {
+			"value": "trainserversuh.database.windows.net"
+		},
+		"Suhail_sql_properties_typeProperties_database": {
+			"value": "DbTraining"
+		},
+		"Suhail_sql_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		},
+		"practiceDB_properties_typeProperties_server": {
+			"value": "trainserversuh.database.windows.net"
+		},
+		"practiceDB_properties_typeProperties_database": {
+			"value": "PracticeDB"
+		},
+		"practiceDB_properties_typeProperties_userName": {
+			"value": "sqladmin"
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_A": {
+			"value": 5
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_B": {
+			"value": 5
+		},
+		"Combo_ABC_51_properties_Combo_ABC_parameters_C": {
+			"value": 5
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_FileName": {
+			"value": "@triggerBody().fileName"
+		},
+		"addDropFileTrigger_properties_SendEmail_parameters_ContainName": {
+			"value": "@triggerBody().folderPath"
+		},
+		"addDropFileTrigger_properties_typeProperties_scope": {
+			"value": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		},
+		"triggerBlob_properties_Combo_ABC_parameters_A": {
+			"value": 10
+		},
+		"triggerBlob_properties_Combo_ABC_parameters_B": {
+			"value": 5
+		},
+		"triggerBlob_properties_Combo_ABC_parameters_C": {
+			"value": 5
+		},
+		"triggerBlob_properties_typeProperties_scope": {
+			"value": "/subscriptions/bd3237af-20eb-4b14-8b52-648cc623e0dd/resourceGroups/AzureTraining/providers/Microsoft.Storage/storageAccounts/storageaccsuhail"
+		}
+	}
+}
