@@ -2,7 +2,7 @@
 	"name": "Meta_Vechile_03_Sales",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureSqlDatabase",
+			"referenceName": "Suhail_sql",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
@@ -14,7 +14,11 @@
 				"precision": 10
 			},
 			{
-				"name": "SourceTable",
+				"name": "SchemaName",
+				"type": "varchar"
+			},
+			{
+				"name": "TableName",
 				"type": "varchar"
 			},
 			{
@@ -28,5 +32,6 @@
 			"schema": "Cntrl",
 			"table": "Meta_Vechile_03_Sales"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

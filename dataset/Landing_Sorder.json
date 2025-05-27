@@ -1,0 +1,13 @@
+{
+	"name": "Landing_Sorder",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Suhail_sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,9 @@
+{
+	"name": "DataFactory-Suh",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "5f3a7842-a5ec-4107-8794-5c90a7b52c23",
+		"tenantId": "88e2707b-a09b-467c-b495-497f1ec5fede"
+	}
+}

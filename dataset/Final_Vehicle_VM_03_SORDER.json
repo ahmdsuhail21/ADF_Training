@@ -1,0 +1,17 @@
+{
+	"name": "Final_Vehicle_VM_03_SORDER",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Suhail_sql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "Vehicle",
+			"table": "VM_03_SORDER"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

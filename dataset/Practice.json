@@ -1,0 +1,17 @@
+{
+	"name": "Practice",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "practiceDB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "VM_03_SORDER_0003"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
