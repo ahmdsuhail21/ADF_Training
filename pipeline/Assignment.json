@@ -72,7 +72,7 @@
 										}
 									],
 									"sqlReaderQuery": {
-										"value": "@concat('SELECT * FROM ', item().TableName)",
+										"value": "@concat('SELECT * FROM ', item().TableName,' where UpdatedAt > ''', formatDateTime(item().LastUpdatedDate, 'yyyy-MM-dd HH:mm:ss.fff'), '''')",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
