@@ -9,8 +9,8 @@
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "dbo",
-			"table": "VM_03_SORDER_0003"
+			"schema": "",
+			"table": ""
 		}
 	},
 	"type": "Microsoft.DataFactory/factories/datasets"
