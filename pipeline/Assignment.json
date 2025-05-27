@@ -228,6 +228,17 @@
 						"value": "@greater(activity('Lookup_Landing').output.count, 0)",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "No_new_records",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "SP_Populate_Mart",
