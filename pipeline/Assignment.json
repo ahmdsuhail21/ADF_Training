@@ -33,7 +33,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Script1",
+						"activity": "Truncate_Landing",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -147,7 +147,7 @@
 				}
 			},
 			{
-				"name": "Script1",
+				"name": "Truncate_Landing",
 				"type": "Script",
 				"dependsOn": [
 					{
