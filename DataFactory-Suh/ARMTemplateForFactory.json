@@ -613,96 +613,11 @@
 						}
 					},
 					{
-						"name": "Lookup_Landing",
-						"type": "Lookup",
-						"dependsOn": [
-							{
-								"activity": "ForEach1",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "AzureSqlSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "Landing",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "If Condition1",
-						"type": "IfCondition",
-						"dependsOn": [
-							{
-								"activity": "Lookup_Landing",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"expression": {
-								"value": "@greater(activity('Lookup_Landing').output.count, 0)",
-								"type": "Expression"
-							},
-							"ifFalseActivities": [
-								{
-									"name": "No_new_records",
-									"type": "Wait",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
-								}
-							],
-							"ifTrueActivities": [
-								{
-									"name": "SP_Populate_Mart",
-									"type": "SqlServerStoredProcedure",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"storedProcedureName": "[[dbo].[SP_Populate_Mart_VM_03_SORDER]"
-									},
-									"linkedServiceName": {
-										"referenceName": "Suhail_sql",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					},
-					{
 						"name": "ForEach2",
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "If Condition1",
+								"activity": "SP_Populate_Mart",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -746,6 +661,33 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "SP_Populate_Mart",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "ForEach1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[dbo].[SP_Populate_Mart_VM_03_SORDER]"
+						},
+						"linkedServiceName": {
+							"referenceName": "Suhail_sql",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"policy": {
@@ -762,8 +704,8 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/Meta_Vechile_03_Sales')]",
 				"[concat(variables('factoryId'), '/linkedServices/Suhail_sql')]",
-				"[concat(variables('factoryId'), '/datasets/Landing')]",
-				"[concat(variables('factoryId'), '/datasets/Practice')]"
+				"[concat(variables('factoryId'), '/datasets/Practice')]",
+				"[concat(variables('factoryId'), '/datasets/Landing')]"
 			]
 		},
 		{
