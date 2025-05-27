@@ -108,42 +108,6 @@
 							]
 						},
 						{
-							"name": "SP_Update_Meta",
-							"type": "SqlServerStoredProcedure",
-							"dependsOn": [
-								{
-									"activity": "Copy_To_Landing",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"storedProcedureName": "[dbo].[Update_LastLoadedAt]",
-								"storedProcedureParameters": {
-									"BranchCode": {
-										"value": {
-											"value": "@item().BranchCode",
-											"type": "Expression"
-										},
-										"type": "String"
-									}
-								}
-							},
-							"linkedServiceName": {
-								"referenceName": "Suhail_sql",
-								"type": "LinkedServiceReference"
-							}
-						},
-						{
 							"name": "Log_RowsCopied",
 							"type": "Script",
 							"dependsOn": [
@@ -171,7 +135,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('UPDATE Cntrl.Meta_Vechile_03_Sales SET RowsCopied = ',activity('Copy_To_Landing').output.rowsCopied,', LoadDate = ''',utcnow(),''' WHERE BranchCode = ''', item().BranchCode, '''')\n",
+											"value": "@concat('UPDATE Cntrl.Meta_Vechile_03_Sales SET RowsCopied = ', string(activity('Copy_To_Landing').output.rowsCopied), ' WHERE BranchCode = ''', item().BranchCode, '''')\n",
 											"type": "Expression"
 										}
 									}
@@ -279,6 +243,42 @@
 							"userProperties": [],
 							"typeProperties": {
 								"storedProcedureName": "[dbo].[SP_Populate_Mart_VM_03_SORDER]"
+							},
+							"linkedServiceName": {
+								"referenceName": "Suhail_sql",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "SP_Update_Meta",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "SP_Populate_Mart",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[dbo].[Update_LastLoadedAt]",
+								"storedProcedureParameters": {
+									"BranchCode": {
+										"value": {
+											"value": "@activity('Lookup1').output.value[0].BranchCode",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
 							},
 							"linkedServiceName": {
 								"referenceName": "Suhail_sql",
