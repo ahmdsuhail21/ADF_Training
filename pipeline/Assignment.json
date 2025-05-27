@@ -263,6 +263,8 @@
 						{
 							"name": "SP_Update_Meta",
 							"type": "SqlServerStoredProcedure",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "SP_Populate_Mart",
@@ -294,6 +296,29 @@
 							"linkedServiceName": {
 								"referenceName": "Suhail_sql",
 								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Execute_Update_Meta_Vehicle_03_Sales",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "SP_Populate_Mart",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Update_Meta_Vechile_03_Sales",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
 							}
 						}
 					]
