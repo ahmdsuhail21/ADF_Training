@@ -259,20 +259,32 @@
 								"referenceName": "Suhail_sql",
 								"type": "LinkedServiceReference"
 							}
-						},
+						}
+					]
+				}
+			},
+			{
+				"name": "ForEach2",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "If Condition1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup1').output.value",
+						"type": "Expression"
+					},
+					"activities": [
 						{
 							"name": "SP_Update_Meta",
 							"type": "SqlServerStoredProcedure",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [
-								{
-									"activity": "SP_Populate_Mart",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -286,7 +298,7 @@
 								"storedProcedureParameters": {
 									"BranchCode": {
 										"value": {
-											"value": "@activity('Lookup1').output.value[0].BranchCode",
+											"value": "@item().BranchCode",
 											"type": "Expression"
 										},
 										"type": "String"
@@ -296,29 +308,6 @@
 							"linkedServiceName": {
 								"referenceName": "Suhail_sql",
 								"type": "LinkedServiceReference"
-							}
-						},
-						{
-							"name": "Execute_Update_Meta_Vehicle_03_Sales",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "SP_Populate_Mart",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "Update_Meta_Vechile_03_Sales",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true
 							}
 						}
 					]
